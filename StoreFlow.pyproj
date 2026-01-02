@@ -1,0 +1,76 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>dc0143af-ee74-4d16-997a-43697d4f17d5</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>StoreFlow</Name>
+    <RootNamespace>StoreFlow</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="backend\app\api\error_handlers.py" />
+    <Compile Include="backend\app\api\routes\customers.py" />
+    <Compile Include="backend\app\api\routes\employees.py" />
+    <Compile Include="backend\app\api\routes\media.py" />
+    <Compile Include="backend\app\api\routes\sales.py" />
+    <Compile Include="backend\app\api\schemas.py" />
+    <Compile Include="backend\app\core\config.py" />
+    <Compile Include="backend\app\core\database.py" />
+    <Compile Include="backend\app\core\logging.py" />
+    <Compile Include="backend\app\domain\enums.py" />
+    <Compile Include="backend\app\domain\exceptions.py" />
+    <Compile Include="backend\app\domain\models.py" />
+    <Compile Include="backend\app\main.py" />
+    <Compile Include="backend\app\repositories\copies_repo.py" />
+    <Compile Include="backend\app\repositories\customers_repo.py" />
+    <Compile Include="backend\app\repositories\employees_repo.py" />
+    <Compile Include="backend\app\repositories\media_repo.py" />
+    <Compile Include="backend\app\repositories\sales_repo.py" />
+    <Compile Include="backend\app\services\sales_service.py" />
+    <Compile Include="backend\app\utils\validators.py" />
+    <Compile Include="StoreFlow_app.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="backend\" />
+    <Folder Include="backend\app\" />
+    <Folder Include="backend\app\api\routes\" />
+    <Folder Include="backend\app\core\" />
+    <Folder Include="backend\app\domain\" />
+    <Folder Include="backend\app\api\" />
+    <Folder Include="backend\app\utils\" />
+    <Folder Include="backend\app\repositories\" />
+    <Folder Include="backend\app\services\" />
+    <Folder Include="ui\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="backend\app\domain\# Klasy domenowe, statusy, typy, wyjatki" />
+    <Content Include="backend\app\repositories\# SQL Operations" />
+    <Content Include="backend\app\services\# Logika Sprzedaży" />
+    <Content Include="backend\database.db" />
+    <Content Include="backend\requirements.txt" />
+    <Content Include="ui\# ENJOY" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
