@@ -9,10 +9,12 @@ Rodzaj nośników multimedialnych można dostosować wedle upodobań: czy są to
 - Architektura klient-serwer pozwalająca na edycję GUI bez potrzeby przepisywania logiki biznesowej.
 - Prosty interfejs graficzny umożliwiający obsługę systemu bez kontaktu z SQL:
   - Dodawanie i edycja tytułów mediów w bazie danych.
-  - Rejestrowanie klientów i pracowników.
+  - Przeglądanie aktualnego stanu magazynu.
+  - Rekordy poszczególnych egzemplarzy danego tytułu.
   - Realizacja sprzedaży egzemplarzy wraz z automatyczną zmianą ich statusu.
   - Zapisywanie historii transakcji sprzedaży.
-  - Przeglądanie aktualnego stanu magazynu.
+  - Rejestrowanie pracowników.
+
 
 ## Architektura systemu
 Aplikacja została podzielna na trzy elementy:
@@ -58,7 +60,6 @@ Struktura tabel jest relacyjna, gdzie głównymi kluczami są ID każdego z prze
 - tblSales
     - SaleID (INTEGER) PRIMARY KEY
     - CopyID (INTEGER) FOREIGN KEY → tblMediaCopies(CopyID)
-    - CustomerID (INTEGER) FOREIGN KEY → tblCustomers(CustomerID)
     - SaleDate (DATETIME)
     - SalePrice (DECIMAL)
     - EmployeeID (INTEGER) FOREIGN KEY → tblEmployees(EmployeeID)

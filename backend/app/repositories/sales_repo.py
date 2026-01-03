@@ -1,0 +1,3 @@
+"""
+tblSales CRUD
+"""
