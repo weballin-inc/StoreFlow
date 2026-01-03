@@ -42,23 +42,18 @@ Baza danych SQLite składa się z prostych tabel, a całość zawarta jest w poj
 Struktura tabel jest relacyjna, gdzie głównymi kluczami są ID każdego z przedmiotów. Każdy fizyczny egzemplarz danego utworu stanowi oddzielny wiersz w odpowiedniej tabeli.
 
 #### Tabele
-- tblMediaItems
+- tblMediaTitles
     - MediaID (INTEGER) PRIMARY KEY
     - MediaTitle (NVARCHAR)
     - MediaType (VARCHAR)
-    - Genre (VARCHAR)
-    - Date (DATETIME)
+    - MediaGenre (VARCHAR)
+    - MediaDate (DATETIME)
 
 - tblMediaCopies
     - CopyID (INTEGER) PRIMARY KEY
-    - MediaID (INTEGER) FOREIGN KEY → tblMediaItems(MediaID)
+    - MediaID (INTEGER) FOREIGN KEY → tblMediaTitles(MediaID)
     - CopyStatus (VARCHAR)
     - CopyPrice (DECIMAL)
-
-- tblCustomers
-    - CustomerID (INTEGER) PRIMARY KEY
-    - CustomerName (VARCHAR)
-    - CustomerEmail (NVARCHAR)
 
 - tblSales
     - SaleID (INTEGER) PRIMARY KEY
