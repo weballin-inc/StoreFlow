@@ -39,6 +39,7 @@
     <Compile Include="backend\app\repositories\media_repo.py" />
     <Compile Include="backend\app\repositories\sales_repo.py" />
     <Compile Include="backend\app\services\copy_management.py" />
+    <Compile Include="backend\app\services\sales_management.py" />
     <Compile Include="backend\app\utils\validators.py" />
     <Compile Include="StoreFlow_app.py" />
   </ItemGroup>

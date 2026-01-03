@@ -15,7 +15,6 @@ Rodzaj nośników multimedialnych można dostosować wedle upodobań: czy są to
   - Zapisywanie historii transakcji sprzedaży.
   - Rejestrowanie pracowników.
 
-
 ## Architektura systemu
 Aplikacja została podzielna na trzy elementy:
 - Frontend (Desktop GUI)
@@ -36,7 +35,27 @@ Z racji tego, że niektóre operacje na bazie danych mają być wykonywane autom
 W backendzie zawarte jest również API, dzięki czemu frontend otrzymuje wyłącznie endpointy do wykorzystania - zapewnia to łatwy rozwój aplikacji czy zmiany konfiguracji.
 
 #### Endpointy API
-`PLACEHOLDER`
+- tblMediaTitles `/media`
+    - `POST /media`
+    - `GET /media | GET /media/{media_id}`
+    - `PUT /media/{media_id}`
+    - `DELETE /media/{media_id}`
+- tblMediaCopies `/copies`
+    - `POST /copies`
+    - `GET /copies | GET/copies/{copy_id}`
+    - `PUT /copies/{copy_id}/price`
+    - `DELETE /copies/{copy_id}`
+- tblEmployees `/employees`
+    - `POST /employees`
+    - `GET /employees | GET /employees/{employee_id}`
+    - `PUT /employees/{employee_id}`
+    - `DELETE /employees/{employee_id}`
+- tblSales `/sales`
+    - `POST /sales`
+    - `GET /sales | GET /sales/{sale_id}`
+    - `405: Method not allowed` - Rekordy sprzedaży nie podlegają edycji, ponieważ wszystkie ich parametry są ustalane jednorazowo w momencie realizacji transakcji.
+    - `DELETE /sales/{sale_id}`
+
 
 ### Struktura bazy danych
 Baza danych SQLite składa się z prostych tabel, a całość zawarta jest w pojedyńczym pliku `dabatase.db`, dzięki czemu możliwe jest tworzenie backupów i pełne formatowanie bazy danych bez potrzeby rozbierania kodu na czynniki pierwsze.
@@ -57,18 +76,18 @@ Struktura tabel jest relacyjna, gdzie głównymi kluczami są ID każdego z prze
     - CopyStatus (VARCHAR)
     - CopyPrice (DECIMAL)
 
+- tblEmployees
+    - EmployeeID (INTEGER) PRIMARY KEY
+    - EmployeeName (VARCHAR)
+    - EmployeeGrade (VARCHAR)
+    - EmployeeStatus (VARCHAR)
+
 - tblSales
     - SaleID (INTEGER) PRIMARY KEY
     - CopyID (INTEGER) FOREIGN KEY → tblMediaCopies(CopyID)
     - SaleDate (DATETIME)
     - SalePrice (DECIMAL)
     - EmployeeID (INTEGER) FOREIGN KEY → tblEmployees(EmployeeID)
-
-- tblEmployees
-    - EmployeeID (INTEGER) PRIMARY KEY
-    - EmployeeName (VARCHAR)
-    - EmployeeGrade (VARCHAR)
-    - EmployeeStatus (VARCHAR)
 
 ### Technologie
 Użyte narzędzia i biblioteki dostępne są również w pliku `requirements.txt`
