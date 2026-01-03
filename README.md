@@ -34,6 +34,10 @@ Z racji tego, że niektóre operacje na bazie danych mają być wykonywane autom
 
 W backendzie zawarte jest również API, dzięki czemu frontend otrzymuje wyłącznie endpointy do wykorzystania - zapewnia to łatwy rozwój aplikacji czy zmiany konfiguracji.
 
+Projekt ogranicza zakres operacji modyfikujących dane do tych, które są logicznie uzasadnione w kontekście biznesowym systemu. Przykładowo, rekordy sprzedaży nie podlegają edycji, ponieważ wszystkie ich parametry są ustalane jednorazowo w momencie realizacji transakcji.
+
+Podobnie operacje `POST /copies` oraz `POST /sales` mają konkretne zasady zgodne z logiką biznesową.
+
 #### Endpointy API
 - tblMediaTitles `/media`
     - `POST /media`
@@ -53,9 +57,8 @@ W backendzie zawarte jest również API, dzięki czemu frontend otrzymuje wyłą
 - tblSales `/sales`
     - `POST /sales`
     - `GET /sales | GET /sales/{sale_id}`
-    - `405: Method not allowed` - Rekordy sprzedaży nie podlegają edycji, ponieważ wszystkie ich parametry są ustalane jednorazowo w momencie realizacji transakcji.
+    - `405: Method not allowed`
     - `DELETE /sales/{sale_id}`
-
 
 ### Struktura bazy danych
 Baza danych SQLite składa się z prostych tabel, a całość zawarta jest w pojedyńczym pliku `dabatase.db`, dzięki czemu możliwe jest tworzenie backupów i pełne formatowanie bazy danych bez potrzeby rozbierania kodu na czynniki pierwsze.

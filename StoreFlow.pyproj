@@ -56,9 +56,6 @@
     <Folder Include="ui\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="backend\app\domain\# Klasy domenowe, statusy, typy, wyjatki" />
-    <Content Include="backend\app\repositories\# SQL Operations" />
-    <Content Include="backend\app\services\# Logika Sprzedaży" />
     <Content Include="backend\database.db" />
     <Content Include="backend\requirements.txt" />
     <Content Include="ui\# ENJOY" />
