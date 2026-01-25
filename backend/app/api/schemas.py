@@ -26,3 +26,26 @@
                 return value
     ```
 """
+
+from typing import Optional
+from pydantic import BaseModel, Field
+
+from app.domain.enums import MediaType
+
+
+class MediaCreateSchema(BaseModel): 
+    title: str = Field(..., min_length=1)
+    media_type: MediaType
+    release_year: Optional[int] = Field(None, ge=0)
+    publisher: Optional[str] = None
+
+
+class MediaResponseSchema(BaseModel):
+    id: int
+    title: str
+    media_type: MediaType
+    release_year: Optional[int]
+    publisher: Optional[str]
+
+    class Config:
+        from_attributes = True

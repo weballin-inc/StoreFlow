@@ -22,3 +22,43 @@
     - W przypadku, gdy tblMediaCopies.CopyStatus = SOLD -> Search for AVAILABLE -> Change tblSales.CopyID, else throw CopyAlreadySold ERROR
     - Na podstawie tblSales.CopyID, zaktualizuj tblMediaCopies.CopyStatus = SOLD
 """
+
+from app.domain.models import MediaTitle
+from app.domain.enums import MediaType
+from app.domain.exceptions import MediaAlreadyExistsError
+from app.repositories import media_repo
+
+
+def add_media_title(
+    title: str,
+    media_type: MediaType,
+    release_year: int | None = None,
+    publisher: str | None = None,
+) -> MediaTitle:
+    """
+    Business procedure:
+    - media title must be unique per (title, media_type)
+    """
+
+    existing = media_repo.get_by_title_and_type(title, media_type)
+    if existing is not None:
+        raise MediaAlreadyExistsError(
+            f"Media '{title}' of type '{media_type.value}' already exists."
+        )
+
+    media = MediaTitle(
+        id=None,
+        title=title,
+        media_type=media_type,
+        release_year=release_year,
+        publisher=publisher,
+    )
+
+    return media_repo.create(media)
+
+
+def get_all_media_titles() -> list[MediaTitle]:
+    """
+    Returns all media titles.
+    """
+    return media_repo.get_all()
