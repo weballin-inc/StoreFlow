@@ -4,14 +4,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>dc0143af-ee74-4d16-997a-43697d4f17d5</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>P:\[PC Backup]\28.04.2025\Documents\Męszczyźni\Programowanie obiektowe\ui\HUD.html</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>StoreFlow</Name>
     <RootNamespace>StoreFlow</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,6 +55,8 @@
   <ItemGroup>
     <Content Include="backend\database.db" />
     <Content Include="backend\requirements.txt" />
+    <Content Include="ui\HUD.html" />
+    <Content Include="ui\style.css" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

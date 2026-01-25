@@ -1,0 +1,39 @@
+body {
+	text-color: #FFFFFF;
+	background-color: #969696;
+	height: 100%;
+	width: 100%;
+}
+
+header {
+  display: flex;
+  align-text: center;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 15%;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+main {
+	height: 65%;
+	width: 100%;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  background-color: #3B3B3B;
+}
