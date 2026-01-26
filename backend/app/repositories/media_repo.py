@@ -1,44 +1,57 @@
 """tblMediaTitles CRUD"""
 
-from typing import Optional
+from typing import List, Optional
 
 from app.core.database import get_connection
 from app.domain.models import MediaTitle
 from app.domain.enums import MediaType
 
 
-def get_all() -> list[MediaTitle]:
-    """
-    Returns all media titles from the database.
-    """
+def list_filtered(
+    media_type: Optional[MediaType] = None,
+    publisher: Optional[str] = None,
+    release_year: Optional[int] = None,
+) -> List[MediaTitle]:
+
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        """
+    query = """
         SELECT MediaID, MediaTitle, MediaType, MediaReleaseYear, MediaPublisher
         FROM tblMediaTitles
-        """
-    )
+        WHERE 1 = 1
+    """
 
+    params = []
+
+    if media_type is not None:
+        query += " AND MediaType = ?"
+        params.append(media_type.value)
+
+    if publisher is not None:
+        query += " AND MediaPublisher = ?"
+        params.append(publisher)
+
+    if release_year is not None:
+        query += " AND MediaReleaseYear = ?"
+        params.append(release_year)
+
+    cursor.execute(query, params)
     rows = cursor.fetchall()
 
-    result: list[MediaTitle] = []
-
-    for row in rows:
-        result.append(
-            MediaTitle(
-                id=row[0],
-                title=row[1],
-                media_type=MediaType(row[2]),
-                release_year=row[3],
-                publisher=row[4],
-            )
+    return [
+        MediaTitle(
+            id=row[0],
+            title=row[1],
+            media_type=MediaType(row[2]),
+            release_year=row[3],
+            publisher=row[4],
         )
+        for row in rows
+    ]
 
-    return result
 
-
+# Used to query if inserting a potential duplicate
 def get_by_title_and_type(
     title: str,
     media_type: MediaType
@@ -71,7 +84,7 @@ def get_by_title_and_type(
         publisher=row[4],
     )
 
-
+# Used to insert
 def create(media: MediaTitle) -> MediaTitle:
     """
     Inserts a new MediaTitle into the database and returns it with ID.
