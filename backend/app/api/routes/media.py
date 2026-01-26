@@ -1,11 +1,12 @@
 from fastapi import APIRouter, status, Query
-from typing import Optional, List
+from typing import Optional
 
 from app.api.schemas import MediaCreateSchema, MediaResponseSchema
 from app.domain.enums import MediaType
 from app.services.services import add_media_title
 from app.services.services import get_all_media_titles
 from app.repositories import media_repo
+from app.repositories.media_queries import MediaSortField
 
 
 router = APIRouter(prefix="/media", tags=["Media"])
@@ -31,9 +32,13 @@ def list_media(
     media_type: Optional[MediaType] = Query(None),
     publisher: Optional[str] = Query(None),
     release_year: Optional[int] = Query(None, ge=0),
+    sort_by: Optional[MediaSortField] = Query(None),
+    order: str = Query("asc", regex="^(asc|desc)$"),
 ):
     return media_repo.list_filtered(
         media_type=media_type,
         publisher=publisher,
         release_year=release_year,
+        sort_by=sort_by.value if sort_by else None,
+        order=order,
     )
