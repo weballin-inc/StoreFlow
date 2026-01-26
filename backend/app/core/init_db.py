@@ -8,12 +8,14 @@ def init_db() -> None:
     cursor.execute(
         """
         CREATE TABLE IF NOT EXISTS tblMediaTitles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            media_type TEXT NOT NULL,
-            release_year INTEGER,
-            publisher TEXT,
-            UNIQUE(title, media_type)
+
+            MediaID INTEGER PRIMARY KEY AUTOINCREMENT,
+            MediaTitle TEXT NOT NULL,
+            MediaType TEXT NOT NULL,
+            MediaReleaseYear INTEGER NOT NULL,
+            MediaPublisher TEXT NOT NULL,
+
+            UNIQUE(MediaTitle, MediaType)
         )
         """
     )

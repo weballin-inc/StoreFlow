@@ -32,8 +32,8 @@ from app.repositories import media_repo
 def add_media_title(
     title: str,
     media_type: MediaType,
-    release_year: int | None = None,
-    publisher: str | None = None,
+    release_year: int,
+    publisher: str,
 ) -> MediaTitle:
     """
     Business procedure:

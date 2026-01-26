@@ -9,5 +9,5 @@ class MediaTitle:
     id: Optional[int]
     title: str
     media_type: MediaType
-    release_year: Optional[int] = None
-    publisher: Optional[str] = None
+    release_year: int
+    publisher: str

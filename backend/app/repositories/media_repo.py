@@ -16,7 +16,7 @@ def get_all() -> list[MediaTitle]:
 
     cursor.execute(
         """
-        SELECT id, title, media_type, release_year, publisher
+        SELECT MediaID, MediaTitle, MediaType, MediaReleaseYear, MediaPublisher
         FROM tblMediaTitles
         """
     )
@@ -51,9 +51,9 @@ def get_by_title_and_type(
 
     cursor.execute(
         """
-        SELECT id, title, media_type, release_year, publisher
+        SELECT MediaID, MediaTitle, MediaType, MediaReleaseYear, MediaPublisher
         FROM tblMediaTitles
-        WHERE title = ? AND media_type = ?
+        WHERE MediaTitle = ? AND MediaType = ?
         """,
         (title, media_type.value),
     )
@@ -81,7 +81,7 @@ def create(media: MediaTitle) -> MediaTitle:
 
     cursor.execute(
         """
-        INSERT INTO tblMediaTitles (title, media_type, release_year, publisher)
+        INSERT INTO tblMediaTitles (MediaTitle, MediaType, MediaReleaseYear, MediaPublisher)
         VALUES (?, ?, ?, ?)
         """,
         (

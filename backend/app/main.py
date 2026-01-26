@@ -6,7 +6,7 @@ from app.core.init_db import init_db
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="StoreFlow API")
+    app = FastAPI(title="StoreFlow API", version="0.6.7")
 
     # Initialize database
     init_db()
@@ -20,3 +20,7 @@ def create_app() -> FastAPI:
     return app
 
 app = create_app()
+
+@app.get("/")
+def root():
+    return {"status": "Everything works, Access /docs for API"}
