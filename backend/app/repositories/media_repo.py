@@ -12,11 +12,14 @@ def list_filtered(
     media_type: Optional[MediaType] = None,
     publisher: Optional[str] = None,
     release_year: Optional[int] = None,
+    release_year_from: Optional[int] = None,
+    release_year_to: Optional[int] = None,
     sort_by: Optional[str] = None,
     order: str = "asc",
     limit: int = 20,
     offset: int = 0,
 ) -> List[MediaTitle]:
+
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -35,6 +38,14 @@ def list_filtered(
         query += " AND MediaPublisher = ?"
         params.append(publisher)
 
+    if release_year_from is not None:
+        query += " AND MediaReleaseYear >= ?"
+        params.append(release_year_from)
+
+    if release_year_to is not None:
+        query += " AND MediaReleaseYear <= ?"
+        params.append(release_year_to)
+
     if release_year is not None:
         query += " AND MediaReleaseYear = ?"
         params.append(release_year)
@@ -51,6 +62,9 @@ def list_filtered(
 
     cursor.execute(query, params)
     rows = cursor.fetchall()
+
+
+
 
     return [
         MediaTitle(

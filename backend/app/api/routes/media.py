@@ -32,15 +32,34 @@ def list_media(
     media_type: Optional[MediaType] = Query(None),
     publisher: Optional[str] = Query(None),
     release_year: Optional[int] = Query(None, ge=0),
+
+    release_year_from: Optional[int] = Query(None, ge=0),
+    release_year_to: Optional[int] = Query(None, ge=0),
+
     sort_by: Optional[MediaSortField] = Query(None),
     order: str = Query("asc", pattern="^(asc|desc)$"),
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
 ):
+
+    if (
+        release_year_from is not None
+        and release_year_to is not None
+        and release_year_from > release_year_to
+    ):
+        from fastapi import HTTPException
+
+        raise HTTPException(
+            status_code=422,
+            detail="release_year_from cannot be greater than release_year_to",
+        )
+
     return media_repo.list_filtered(
         media_type=media_type,
         publisher=publisher,
         release_year=release_year,
+        release_year_from=release_year_from,
+        release_year_to=release_year_to,
         sort_by=sort_by.value if sort_by else None,
         order=order,
         limit=limit,
