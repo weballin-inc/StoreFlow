@@ -14,6 +14,8 @@ def list_filtered(
     release_year: Optional[int] = None,
     sort_by: Optional[str] = None,
     order: str = "asc",
+    limit: int = 20,
+    offset: int = 0,
 ) -> List[MediaTitle]:
     conn = get_connection()
     cursor = conn.cursor()
@@ -43,6 +45,9 @@ def list_filtered(
             query += f" ORDER BY {column} {order.upper()}"
         except ValueError:
             pass
+
+    query += " LIMIT ? OFFSET ?"
+    params.extend([limit, offset])
 
     cursor.execute(query, params)
     rows = cursor.fetchall()

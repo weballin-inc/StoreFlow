@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Query
-from typing import Optional
+from typing import Optional, List
 
 from app.api.schemas import MediaCreateSchema, MediaResponseSchema
 from app.domain.enums import MediaType
@@ -27,13 +27,15 @@ def create_media(payload: MediaCreateSchema):
     return media
 
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=list[MediaResponseSchema])
+@router.get("", status_code=status.HTTP_200_OK, response_model=List[MediaResponseSchema])
 def list_media(
     media_type: Optional[MediaType] = Query(None),
     publisher: Optional[str] = Query(None),
     release_year: Optional[int] = Query(None, ge=0),
     sort_by: Optional[MediaSortField] = Query(None),
-    order: str = Query("asc", regex="^(asc|desc)$"),
+    order: str = Query("asc", pattern="^(asc|desc)$"),
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
 ):
     return media_repo.list_filtered(
         media_type=media_type,
@@ -41,4 +43,6 @@ def list_media(
         release_year=release_year,
         sort_by=sort_by.value if sort_by else None,
         order=order,
+        limit=limit,
+        offset=offset,
     )
