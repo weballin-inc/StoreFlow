@@ -9,7 +9,7 @@ async def handle_copy_error(request, exc):
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from app.domain.exceptions import MediaAlreadyExistsError
+from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
 
 
 def register_error_handlers(app: FastAPI) -> None:
@@ -25,3 +25,13 @@ def register_error_handlers(app: FastAPI) -> None:
                 "message": str(exc),
             },
         )
+
+
+def media_not_found_handler(request, exc: MediaNotFoundError):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "error": "MEDIA_NOT_FOUND",
+            "message": str(exc),
+        },
+    )

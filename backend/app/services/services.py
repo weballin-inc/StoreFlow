@@ -25,7 +25,7 @@
 
 from app.domain.models import MediaTitle
 from app.domain.enums import MediaType
-from app.domain.exceptions import MediaAlreadyExistsError
+from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
 from app.repositories import media_repo
 
 
@@ -62,3 +62,15 @@ def get_all_media_titles() -> list[MediaTitle]:
     Returns all media titles.
     """
     return media_repo.get_all()
+
+
+def get_media_by_id(media_id: int):
+    """
+    Returns a specific media based on ID
+    """
+    media = media_repo.get_by_id(media_id)
+
+    if media is None:
+        raise MediaNotFoundError(f"Media with ID{media_id} not found")
+
+    return media

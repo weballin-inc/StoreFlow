@@ -63,9 +63,6 @@ def list_filtered(
     cursor.execute(query, params)
     rows = cursor.fetchall()
 
-
-
-
     return [
         MediaTitle(
             id=row[0],
@@ -110,6 +107,35 @@ def get_by_title_and_type(
         release_year=row[3],
         publisher=row[4],
     )
+
+
+def get_by_id(media_id: int) -> Optional[MediaTitle]:
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT MediaID, MediaTitle, MediaType, MediaReleaseYear, MediaPublisher
+        FROM tblMediaTitles
+        WHERE MediaID = ?
+        """,
+        (media_id,),
+    )
+
+    row = cursor.fetchone()
+
+    if row is None:
+        return None
+
+    return MediaTitle(
+        id=row[0],
+        title=row[1],
+        media_type=MediaType(row[2]),
+        release_year=row[3],
+        publisher=row[4],
+    )
+
+
 
 # Used to insert
 def create(media: MediaTitle) -> MediaTitle:

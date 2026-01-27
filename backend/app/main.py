@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 
 from app.api.routes.media import router as media_router
-from app.api.error_handlers import register_error_handlers
+from app.api.error_handlers import register_error_handlers, media_not_found_handler
 from app.core.init_db import init_db
+from app.domain.exceptions import MediaNotFoundError
 
 
 def create_app() -> FastAPI:
@@ -16,6 +17,7 @@ def create_app() -> FastAPI:
 
     # Error handlers
     register_error_handlers(app)
+    app.add_exception_handler(MediaNotFoundError, media_not_found_handler)
 
     return app
 

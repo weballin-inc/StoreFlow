@@ -1,10 +1,10 @@
-from fastapi import APIRouter, status, Query
+from fastapi import APIRouter, status, Query, Path
 from typing import Optional, List
 
 from app.api.schemas import MediaCreateSchema, MediaResponseSchema
 from app.domain.enums import MediaType
 from app.services.services import add_media_title
-from app.services.services import get_all_media_titles
+from app.services.services import get_all_media_titles, get_media_by_id
 from app.repositories import media_repo
 from app.repositories.media_queries import MediaSortField
 
@@ -65,3 +65,9 @@ def list_media(
         limit=limit,
         offset=offset,
     )
+
+@router.get("/{media_id}", status_code=status.HTTP_200_OK, response_model=MediaResponseSchema)
+def get_media(
+    media_id: int = Path(..., ge=1),
+):
+    return get_media_by_id(media_id)
