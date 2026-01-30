@@ -13,7 +13,6 @@ Rodzaj nośników multimedialnych można dostosować wedle upodobań: czy są to
   - Rekordy poszczególnych egzemplarzy danego tytułu.
   - Realizacja sprzedaży egzemplarzy wraz z automatyczną zmianą ich statusu.
   - Zapisywanie historii transakcji sprzedaży.
-  - Rejestrowanie pracowników.
 
 ## Architektura systemu
 Aplikacja została podzielna na trzy elementy:
@@ -49,11 +48,6 @@ Podobnie operacje `POST /copies` oraz `POST /sales` mają konkretne zasady zgodn
     - `GET /copies | GET/copies/{copy_id}`
     - `PUT /copies/{copy_id}/price`
     - `DELETE /copies/{copy_id}`
-- tblEmployees `/employees`
-    - `POST /employees`
-    - `GET /employees | GET /employees/{employee_id}`
-    - `PUT /employees/{employee_id}`
-    - `DELETE /employees/{employee_id}`
 - tblSales `/sales`
     - `POST /sales`
     - `GET /sales | GET /sales/{sale_id}`
@@ -78,12 +72,6 @@ Struktura tabel jest relacyjna, gdzie głównymi kluczami są ID każdego z prze
     - MediaID (INTEGER) FOREIGN KEY → tblMediaTitles(MediaID)
     - CopyStatus (VARCHAR)
     - CopyPrice (DECIMAL)
-
-- tblEmployees
-    - EmployeeID (INTEGER) PRIMARY KEY
-    - EmployeeName (VARCHAR)
-    - EmployeeGrade (VARCHAR)
-    - EmployeeStatus (VARCHAR)
 
 - tblSales
     - SaleID (INTEGER) PRIMARY KEY
