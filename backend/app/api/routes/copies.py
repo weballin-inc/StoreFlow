@@ -35,7 +35,7 @@ def list_copies(
         media_id=media_id,
         price=price,
         status=status,
-        sort_by=sort_by,
+        sort_by=sort_by.value if sort_by else None,
         order=order,
         limit=limit,
         offset=offset,
