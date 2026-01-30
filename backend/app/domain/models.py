@@ -19,3 +19,12 @@ class MediaCopy:
     media_id: int
     price: float
     status: CopyStatus
+
+
+@dataclass
+class Sale:
+    id: Optional[int]
+    copy_id: int
+    price: float
+
+

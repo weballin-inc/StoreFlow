@@ -1,15 +1,8 @@
-"""
-```
-@app.exception_handler(CopyNotAvailableError)
-async def handle_copy_error(request, exc):
-    return JSONResponse(status_code=400, content={"error": "Copy not available"})
-```
-"""
-
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
 from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
+from app.domain.exceptions import CopyAlreadySoldError, CopyNotFoundError
 
 
 def register_error_handlers(app: FastAPI) -> None:
@@ -35,4 +28,22 @@ def media_not_found_handler(request, exc: MediaNotFoundError):
             "error": "MEDIA_NOT_FOUND",
             "message": str(exc),
         },
+    )
+
+
+def copy_not_found_handler(request, exc: CopyNotFoundError):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "error": "COPY_NOT_FOUND",
+            "message": str(exc)},
+    )
+
+
+def copy_already_sold_handler(request, exc: CopyAlreadySoldError):
+    return JSONResponse(
+        status_code=409,
+        content={
+            "error": "COPY_ALREADY_SOLD",
+            "message": str(exc)},
     )

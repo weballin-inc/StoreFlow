@@ -28,7 +28,18 @@ def init_db() -> None:
 
             FOREIGN KEY (MediaID) REFERENCES tblMediaTitles(MediaID)
                 ON DELETE RESTRICT
-        )
+        );
+
+        
+        CREATE TABLE IF NOT EXISTS tblSales (
+        
+            SaleID INTEGER PRIMARY KEY AUTOINCREMENT,
+            CopyID INTEGER NOT NULL,
+            Price REAL NOT NULL,
+            
+            FOREIGN KEY (CopyID) REFERENCES tblMediaCopies(CopyID)
+                ON DELETE RESTRICT
+        );
         """
     )
 

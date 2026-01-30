@@ -10,7 +10,6 @@ class MediaCreateSchema(BaseModel):
     release_year: int = Field(..., ge=0)
     publisher: str = Field(..., min_length=1)
 
-
 class MediaResponseSchema(BaseModel):
     id: int
     title: str
@@ -26,9 +25,17 @@ class CopyCreateSchema(BaseModel):
     media_id: int = Field(..., ge=1)
     price: float = Field(..., ge=0)
 
-
 class CopyResponseSchema(BaseModel):
     id: int
     media_id: int
     price: float
     status: CopyStatus
+
+
+class SaleCreateSchema(BaseModel):
+    copy_id: int = Field(..., ge=1)
+
+class SaleResponseSchema(BaseModel):
+    id: int
+    copy_id: int
+    price: float
