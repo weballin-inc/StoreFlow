@@ -50,7 +50,7 @@ def get_copy(
     if copy is None:
         raise HTTPException(
             status_code=404,
-            detail="Copy not found"
+            detail="Copy record not found"
         )
 
     return copy

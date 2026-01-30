@@ -13,3 +13,12 @@ class CopiesSortField(str, Enum):
     media_id = "MediaID"
     price = "Price"
     status = "Status"
+
+
+class SalesSortField(str, Enum):
+    sale_id = "s.SaleID"
+    sale_price = "s.Price"
+    copy_id = "c.CopyID"
+    media_id = "m.MediaID"
+    title = "m.Title"
+    release_year = "m.ReleaseYear"
