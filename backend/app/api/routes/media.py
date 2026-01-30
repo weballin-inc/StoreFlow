@@ -3,16 +3,15 @@ from typing import Optional, List
 
 from app.api.schemas import MediaCreateSchema, MediaResponseSchema
 from app.domain.enums import MediaType
-from app.services.services import add_media_title
-from app.services.services import get_all_media_titles, get_media_by_id
-from app.repositories import media_repo
 from app.repositories.media_queries import MediaSortField
+from app.services.services import add_media_title, get_media_by_id
+from app.repositories import media_repo
 
 
 router = APIRouter(prefix="/media", tags=["Media"])
 
 
-@router.post("",status_code=status.HTTP_201_CREATED,response_model=MediaResponseSchema)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=MediaResponseSchema)
 def create_media(payload: MediaCreateSchema):
     """
     Add new media title.

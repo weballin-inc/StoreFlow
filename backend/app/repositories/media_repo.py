@@ -24,7 +24,7 @@ def list_filtered(
     cursor = conn.cursor()
 
     query = """
-        SELECT MediaID, MediaTitle, MediaType, MediaReleaseYear, MediaPublisher
+        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher
         FROM tblMediaTitles
         WHERE 1 = 1
     """
@@ -35,19 +35,19 @@ def list_filtered(
         params.append(media_type.value)
 
     if publisher is not None:
-        query += " AND MediaPublisher = ?"
+        query += " AND Publisher = ?"
         params.append(publisher)
 
     if release_year_from is not None:
-        query += " AND MediaReleaseYear >= ?"
+        query += " AND ReleaseYear >= ?"
         params.append(release_year_from)
 
     if release_year_to is not None:
-        query += " AND MediaReleaseYear <= ?"
+        query += " AND ReleaseYear <= ?"
         params.append(release_year_to)
 
     if release_year is not None:
-        query += " AND MediaReleaseYear = ?"
+        query += " AND ReleaseYear = ?"
         params.append(release_year)
 
     if sort_by is not None:
@@ -81,16 +81,16 @@ def get_by_title_and_type(
     media_type: MediaType
 ) -> Optional[MediaTitle]:
     """
-    Returns MediaTitle if found, otherwise None.
+    Returns Title if found, otherwise None.
     """
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute(
         """
-        SELECT MediaID, MediaTitle, MediaType, MediaReleaseYear, MediaPublisher
+        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher
         FROM tblMediaTitles
-        WHERE MediaTitle = ? AND MediaType = ?
+        WHERE Title = ? AND MediaType = ?
         """,
         (title, media_type.value),
     )
@@ -115,7 +115,7 @@ def get_by_id(media_id: int) -> Optional[MediaTitle]:
 
     cursor.execute(
         """
-        SELECT MediaID, MediaTitle, MediaType, MediaReleaseYear, MediaPublisher
+        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher
         FROM tblMediaTitles
         WHERE MediaID = ?
         """,
@@ -147,7 +147,7 @@ def create(media: MediaTitle) -> MediaTitle:
 
     cursor.execute(
         """
-        INSERT INTO tblMediaTitles (MediaTitle, MediaType, MediaReleaseYear, MediaPublisher)
+        INSERT INTO tblMediaTitles (Title, MediaType, ReleaseYear, Publisher)
         VALUES (?, ?, ?, ?)
         """,
         (
