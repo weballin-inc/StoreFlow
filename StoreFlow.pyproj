@@ -38,7 +38,7 @@
     <Compile Include="backend\app\main.py" />
     <Compile Include="backend\app\repositories\copies_repo.py" />
     <Compile Include="backend\app\repositories\employees_repo.py" />
-    <Compile Include="backend\app\repositories\media_queries.py" />
+    <Compile Include="backend\app\repositories\additional_queries.py" />
     <Compile Include="backend\app\repositories\media_repo.py" />
     <Compile Include="backend\app\repositories\sales_repo.py" />
     <Compile Include="backend\app\repositories\__init__.py" />

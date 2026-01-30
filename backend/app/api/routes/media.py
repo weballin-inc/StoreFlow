@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from app.api.schemas import MediaCreateSchema, MediaResponseSchema
 from app.domain.enums import MediaType
-from app.repositories.media_queries import MediaSortField
+from app.repositories.additional_queries import MediaSortField
 from app.services.services import add_media_title, get_media_by_id
 from app.repositories import media_repo
 
