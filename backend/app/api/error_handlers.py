@@ -13,6 +13,7 @@ from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
 
 
 def register_error_handlers(app: FastAPI) -> None:
+
     @app.exception_handler(MediaAlreadyExistsError)
     async def media_already_exists_handler(
         request: Request,

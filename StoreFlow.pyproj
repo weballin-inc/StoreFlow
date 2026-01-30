@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="backend\app\api\error_handlers.py" />
+    <Compile Include="backend\app\api\routes\copies.py" />
     <Compile Include="backend\app\api\routes\employees.py" />
     <Compile Include="backend\app\api\routes\media.py" />
     <Compile Include="backend\app\api\routes\sales.py" />

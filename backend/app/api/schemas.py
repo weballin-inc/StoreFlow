@@ -1,11 +1,7 @@
-"""
-    Modele danych do komunikacji przez API
-"""
-
-from typing import Optional
+"""Data models for API communication"""
 from pydantic import BaseModel, Field
 
-from app.domain.enums import MediaType
+from app.domain.enums import MediaType, CopyStatus
 
 
 class MediaCreateSchema(BaseModel): 
@@ -24,3 +20,15 @@ class MediaResponseSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class CopyCreateSchema(BaseModel):
+    media_id: int = Field(..., ge=1)
+    price: float = Field(..., ge=0)
+
+
+class CopyResponseSchema(BaseModel):
+    id: int
+    media_id: int
+    price: float
+    status: CopyStatus

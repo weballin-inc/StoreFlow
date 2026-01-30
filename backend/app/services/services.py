@@ -1,33 +1,13 @@
-"""
-1. (CREATE dla tblMediaCopies) 
-    AddCopy dodaje egzemplarz danego tytulu do tblMediaCopy:
-    - Sprawdza czy tblMediaTitles zawiera dany MediaTitle
-        - Jezeli zawiedzie, zaproponuje utworzenie nowego rekordu
-            - Potrzebowac bedzie: MediaType, MediaGenre, MediaDate
-            - W innym przypadku TitleNotRegistered ERROR
-
-2. (UPDATE dla tblMediaCopies)
-    UpdateCopyPrice:
-    - Przyjmuje wylacznie zmiane wartosci tblMediaCopies.CopyPrice
-    - Aktualizuje wszystkie rekordy z tym samym tblMediaCopies.MediaID
-        - Z wylaczeniem tych z CopyStatus = SOLD
-"""
-
-"""
-1. (CREATE dla tblSales) 
-    SellCopy rejestruje sprzedaz egzemplarza w tblSales:
-    - tblSales.SaleDate = GETDATE()
-    - Uzupelnia pole SalePrice o wartosc tblMediaCopies.CopyPrice
-    - W przypadku nieistniejacego/nieaktywnego EmployeeID -> EmployeeNonExistent/EmployeeInactive ERROR
-    - W przypadku, gdy tblMediaCopies.CopyStatus = SOLD -> Search for AVAILABLE -> Change tblSales.CopyID, else throw CopyAlreadySold ERROR
-    - Na podstawie tblSales.CopyID, zaktualizuj tblMediaCopies.CopyStatus = SOLD
-"""
-
-from app.domain.models import MediaTitle
-from app.domain.enums import MediaType
+""" Business Logic for all operations """
+from app.domain.models import MediaTitle, MediaCopy
+from app.domain.enums import MediaType, CopyStatus
 from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
-from app.repositories import media_repo
+from app.repositories import media_repo, copies_repo
 
+
+############################################
+#   tblMediaTitles
+############################################
 
 def add_media_title(
     title: str,
@@ -57,13 +37,6 @@ def add_media_title(
     return media_repo.create(media)
 
 
-def get_all_media_titles() -> list[MediaTitle]:
-    """
-    Returns all media titles.
-    """
-    return media_repo.get_all()
-
-
 def get_media_by_id(media_id: int):
     """
     Returns a specific media based on ID
@@ -74,3 +47,23 @@ def get_media_by_id(media_id: int):
         raise MediaNotFoundError(f"Media with ID{media_id} not found")
 
     return media
+
+
+############################################
+#   tblMediaCopies
+############################################
+
+def add_copy(media_id: int, price: float) -> MediaCopy:
+    media = media_repo.get_by_id(media_id)
+
+    if media is None:
+        raise MediaNotFoundError(f"Media with ID{media_id} not found")
+
+    copy = MediaCopy(
+        id=None,
+        media_id=media_id,
+        price=price,
+        status=CopyStatus.AVAILABLE
+    )
+
+    return copies_repo.create(copy)
