@@ -24,7 +24,6 @@
   <ItemGroup>
     <Compile Include="backend\app\api\error_handlers.py" />
     <Compile Include="backend\app\api\routes\copies.py" />
-    <Compile Include="backend\app\api\routes\employees.py" />
     <Compile Include="backend\app\api\routes\media.py" />
     <Compile Include="backend\app\api\routes\sales.py" />
     <Compile Include="backend\app\api\schemas.py" />
@@ -37,7 +36,6 @@
     <Compile Include="backend\app\domain\models.py" />
     <Compile Include="backend\app\main.py" />
     <Compile Include="backend\app\repositories\copies_repo.py" />
-    <Compile Include="backend\app\repositories\employees_repo.py" />
     <Compile Include="backend\app\repositories\additional_queries.py" />
     <Compile Include="backend\app\repositories\media_repo.py" />
     <Compile Include="backend\app\repositories\sales_repo.py" />
