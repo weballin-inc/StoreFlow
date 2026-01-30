@@ -30,7 +30,16 @@ def list_copies(
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     ):
-    return copies_repo.list_filtered()
+    return copies_repo.list_filtered(
+        copy_id=copy_id,
+        media_id=media_id,
+        price=price,
+        status=status,
+        sort_by=sort_by,
+        order=order,
+        limit=limit,
+        offset=offset,
+    )
 
 @router.get("/{copy_id}", status_code=status.HTTP_200_OK, response_model=CopyResponseSchema)
 def get_copy(

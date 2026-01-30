@@ -82,7 +82,7 @@ def list_filtered(
 
     if copy_id is not None:
         query += " AND CopyID = ?"
-        params.append(copy_id.value)
+        params.append(copy_id)
 
     if media_id is not None:
         query += " AND MediaID = ?"
