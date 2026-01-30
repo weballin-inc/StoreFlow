@@ -23,3 +23,22 @@ def create(sale: Sale) -> Sale:
         copy_id=sale.copy_id,
         price=sale.price,
     )
+
+
+def create_with_conn(conn, sale: Sale) -> Sale:
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO tblSales (CopyID, Price)
+        VALUES (?, ?)
+        """,
+        (sale.copy_id, sale.price),
+    )
+
+    return Sale(
+        id=cursor.lastrowid,
+        copy_id=sale.copy_id,
+        price=sale.price
+    )
+

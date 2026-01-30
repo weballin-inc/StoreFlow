@@ -134,3 +134,16 @@ def update_status(copy_id: int, status: CopyStatus) -> None:
     )
 
     conn.commit()
+
+
+def update_status_with_conn(conn, copy_id: int, status: CopyStatus) -> None:
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE tblMediaCopies
+        SET Status = ?
+        WHERE CopyID = ?
+        """,
+        (status.value, copy_id),
+    )

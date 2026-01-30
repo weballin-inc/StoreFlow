@@ -1,4 +1,5 @@
 """ Business Logic for all operations """
+from app.core.database import get_connection
 from app.domain.models import MediaTitle, MediaCopy, Sale
 from app.domain.enums import MediaType, CopyStatus
 from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
@@ -45,7 +46,7 @@ def get_media_by_id(media_id: int):
     media = media_repo.get_by_id(media_id)
 
     if media is None:
-        raise MediaNotFoundError(f"Media with ID{media_id} not found")
+        raise MediaNotFoundError(f"Media with ID {media_id} not found")
 
     return media
 
@@ -58,7 +59,7 @@ def add_copy(media_id: int, price: float) -> MediaCopy:
     media = media_repo.get_by_id(media_id)
 
     if media is None:
-        raise MediaNotFoundError(f"Media with ID{media_id} not found")
+        raise MediaNotFoundError(f"Media with ID {media_id} not found")
 
     copy = MediaCopy(
         id=None,
@@ -74,22 +75,35 @@ def add_copy(media_id: int, price: float) -> MediaCopy:
 #   tblSales
 ############################################
 def sell_copy(copy_id: int) -> Sale:
-    copy = copies_repo.get_by_id(copy_id)
+    conn = get_connection()
 
-    if copy is None:
-        raise CopyNotFoundError(f"Copy with id {copy_id} not found")
+    try:
+        conn.execute("BEGIN")
 
-    if copy.status == CopyStatus.SOLD:
-        raise CopyAlreadySoldError(f"Copy {copy_id} already sold")
+        copy = copies_repo.get_by_id(copy_id)
+        if copy is None:
+            raise CopyNotFoundError(f"Copy with ID {copy_id} not found")
 
-    sale = Sale(
-        id=None,
-        copy_id=copy_id,
-        price=copy.price,
-    )
+        if copy.status == CopyStatus.SOLD:
+            raise CopyAlreadySoldError(f"Copy with ID {copy_id} already sold")
 
-    created_sale = sales_repo.create(sale)
+        sale = Sale(
+            id=copy.id,
+            copy_id=copy_id,
+            price=copy.price,
+        )
 
-    copies_repo.update_status(copy_id, CopyStatus.SOLD)
+        created_sale = sales_repo.create_with_conn(conn, sale)
 
-    return created_sale
+        copies_repo.update_status_with_conn(conn, sale.id, CopyStatus.SOLD)
+
+        conn.commit()
+        return created_sale
+
+    except:
+        conn.rollback()
+        raise
+
+    finally:
+        conn.close()
+
