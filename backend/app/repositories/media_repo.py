@@ -3,8 +3,8 @@
 from typing import List, Optional
 
 from app.core.database import get_connection
-from app.domain.models import MediaTitle
 from app.domain.enums import MediaType
+from app.domain.models import MediaTitle
 from app.repositories.additional_queries import MediaSortField
 
 

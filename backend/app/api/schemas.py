@@ -2,7 +2,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 
-from app.domain.enums import MediaType, CopyStatus
+from app.domain.enums import MediaType
 
 ############################################
 #   tblMediaTitles
@@ -30,30 +30,6 @@ class MediaUpdateSchema(BaseModel):
     title: Optional[str] = Field(None, min_length=1)
     release_year: Optional[int] = Field(None, ge=0)
     publisher: Optional[str] = Field(None, min_length=1)
-
-
-############################################
-#   tblMediaCopies
-############################################
-
-class CopyBaseSchema(BaseModel):
-    price: float = Field(..., ge=0)
-
-class CopyCreateSchema(CopyBaseSchema):
-    media_id: int = Field(..., ge=1)
-
-class CopyResponseSchema(CopyCreateSchema):
-    id: int
-    status: CopyStatus
-
-class PagedCopiesResponseSchema(BaseModel):
-    items: List[CopyResponseSchema]
-    total: int
-    limit: int
-    offset: int
-
-class CopyUpdateSchema(CopyBaseSchema):
-    pass
 
 ############################################
 #   tblSales

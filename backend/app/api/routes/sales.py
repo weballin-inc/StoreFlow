@@ -6,10 +6,11 @@ from app.api.schemas import (
     SaleResponseSchema,
     PagedSalesResponseSchema
 )
-from app.services.services import sell_copy
+from app.domain.enums import MediaType
 from app.repositories import sales_repo
 from app.repositories.additional_queries import SalesSortField
-from app.domain.enums import MediaType
+from app.services.services import sell_copy
+
 
 router = APIRouter(prefix="/sales", tags=["Sales"])
 

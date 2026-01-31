@@ -1,11 +1,11 @@
 """ Business Logic for all operations """
+
+from app.api.schemas import MediaUpdateSchema
 from app.core.database import get_connection
-from app.domain.models import MediaTitle, MediaCopy, Sale
-from app.domain.enums import MediaType, CopyStatus
+from app.domain.enums import MediaType
 from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
-from app.domain.exceptions import CopyAlreadySoldError, CopyNotFoundError
-from app.repositories import media_repo, copies_repo, sales_repo
-from backend.app.api.schemas import MediaUpdateSchema
+from app.domain.models import MediaTitle, Sale
+from app.repositories import media_repo, sales_repo
 
 
 ############################################
@@ -64,35 +64,6 @@ def update_media(media_id: int, data: MediaUpdateSchema) -> None:
         release_year=data.release_year,
         publisher=data.publisher,
     )
-
-
-############################################
-#   tblMediaCopies
-############################################
-
-def add_copy(media_id: int, price: float) -> MediaCopy:
-    media = media_repo.get_by_id(media_id)
-
-    if media is None:
-        raise MediaNotFoundError(f"Media with ID {media_id} not found")
-
-    copy = MediaCopy(
-        id=None,
-        media_id=media_id,
-        price=price,
-        status=CopyStatus.AVAILABLE
-    )
-
-    return copies_repo.create(copy)
-
-
-def update_copy_price(copy_id: int, price: float) -> None:
-    copy = copies_repo.get_by_id(copy_id)
-
-    if copy is None:
-        raise CopyNotFoundError(f"Copy {copy_id} not found")
-
-    copies_repo.update_price(copy_id, price)
 
 
 ############################################
