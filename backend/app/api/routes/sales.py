@@ -1,10 +1,15 @@
 from fastapi import APIRouter, status, Query, Path, HTTPException
-from typing import Optional, List, Dict
+from typing import Optional
 
-from app.api.schemas import SaleCreateSchema, SaleResponseSchema
+from app.api.schemas import (
+    SaleCreateSchema,
+    SaleResponseSchema,
+    PagedSalesResponseSchema
+)
 from app.services.services import sell_copy
 from app.repositories import sales_repo
 from app.repositories.additional_queries import SalesSortField
+from app.domain.enums import MediaType
 
 router = APIRouter(prefix="/sales", tags=["Sales"])
 
@@ -13,9 +18,9 @@ def create_sale(payload: SaleCreateSchema):
     return sell_copy(payload.copy_id)
 
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=List[Dict])
+@router.get("", status_code=status.HTTP_200_OK, response_model=PagedSalesResponseSchema)
 def list_sales(
-    media_type: Optional[str] = Query(None), 
+    media_type: Optional[MediaType] = Query(None), 
     publisher: Optional[str] = Query(None),
     release_year_from: Optional[int] = Query(None, ge=0),
     release_year_to: Optional[int] = Query(None, ge=0),
@@ -24,7 +29,7 @@ def list_sales(
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
 ):
-    return sales_repo.list_filtered(
+    items, total = sales_repo.list_filtered(
         media_type=media_type,
         publisher=publisher,
         release_year_from=release_year_from,
@@ -34,6 +39,13 @@ def list_sales(
         limit=limit,
         offset=offset,
     )
+
+    return {
+        "items": items,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+    }
 
 @router.get("/{sale_id}", status_code=status.HTTP_200_OK, response_model=SaleResponseSchema)
 def get_sale(

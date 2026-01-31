@@ -62,6 +62,7 @@ def list_filtered(
 
     cursor.execute(query, params)
     rows = cursor.fetchall()
+    total = len(rows)
 
     return [
         MediaTitle(
@@ -72,7 +73,7 @@ def list_filtered(
             publisher=row[4],
         )
         for row in rows
-    ]
+    ], total
 
 
 # Used to query if inserting a potential duplicate
@@ -134,7 +135,6 @@ def get_by_id(media_id: int) -> Optional[MediaTitle]:
         release_year=row[3],
         publisher=row[4],
     )
-
 
 
 # Used to insert

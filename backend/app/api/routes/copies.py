@@ -1,7 +1,11 @@
 from fastapi import APIRouter, status, Path, Query, HTTPException
-from typing import List, Optional
+from typing import Optional
 
-from app.api.schemas import CopyCreateSchema, CopyResponseSchema
+from app.api.schemas import (
+    CopyCreateSchema, 
+    CopyResponseSchema, 
+    PagedCopiesResponseSchema
+)
 from app.domain.enums import CopyStatus
 from app.services.services import add_copy
 from app.repositories import copies_repo
@@ -19,7 +23,7 @@ def create_copy(payload: CopyCreateSchema):
     )
 
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=List[CopyResponseSchema])
+@router.get("", status_code=status.HTTP_200_OK, response_model=PagedCopiesResponseSchema)
 def list_copies(
     copy_id: Optional[int] = Query(None, ge=1),
     media_id: Optional[int] = Query(None, ge=1),
@@ -30,7 +34,8 @@ def list_copies(
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     ):
-    return copies_repo.list_filtered(
+
+    items, total = copies_repo.list_filtered(
         copy_id=copy_id,
         media_id=media_id,
         price=price,
@@ -40,6 +45,14 @@ def list_copies(
         limit=limit,
         offset=offset,
     )
+
+    return {
+        "items": items,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+    }
+
 
 @router.get("/{copy_id}", status_code=status.HTTP_200_OK, response_model=CopyResponseSchema)
 def get_copy(

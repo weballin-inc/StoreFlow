@@ -108,6 +108,9 @@ def list_filtered(
 
     cursor.execute(query, params)
     rows = cursor.fetchall()
+    total = len(rows)
+
+    conn.close()
 
     return [
         MediaCopy(
@@ -117,7 +120,7 @@ def list_filtered(
             status=CopyStatus(row[3]),
         )
         for row in rows
-    ]
+    ], total
 
 
 def update_status(copy_id: int, status: CopyStatus) -> None:

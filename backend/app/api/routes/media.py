@@ -1,7 +1,11 @@
 from fastapi import APIRouter, status, Query, Path
 from typing import Optional, List
 
-from app.api.schemas import MediaCreateSchema, MediaResponseSchema
+from app.api.schemas import (
+    MediaCreateSchema,
+    MediaResponseSchema,
+    PagedMediaResponseSchema
+)
 from app.domain.enums import MediaType
 from app.repositories.additional_queries import MediaSortField
 from app.services.services import add_media_title, get_media_by_id
@@ -26,7 +30,7 @@ def create_media(payload: MediaCreateSchema):
     return media
 
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=List[MediaResponseSchema])
+@router.get("", status_code=status.HTTP_200_OK, response_model=PagedMediaResponseSchema)
 def list_media(
     media_type: Optional[MediaType] = Query(None),
     publisher: Optional[str] = Query(None),
@@ -53,7 +57,7 @@ def list_media(
             detail="release_year_from cannot be greater than release_year_to",
         )
 
-    return media_repo.list_filtered(
+    items, total = media_repo.list_filtered(
         media_type=media_type,
         publisher=publisher,
         release_year=release_year,
@@ -64,6 +68,13 @@ def list_media(
         limit=limit,
         offset=offset,
     )
+
+    return {
+        "items": items,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+    }
 
 @router.get("/{media_id}", status_code=status.HTTP_200_OK, response_model=MediaResponseSchema)
 def get_media(

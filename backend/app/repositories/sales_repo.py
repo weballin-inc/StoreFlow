@@ -85,10 +85,10 @@ def list_filtered(
     query += " LIMIT ? OFFSET ?"
     params.extend([limit, offset])
 
-    print(query)
-
     cursor.execute(query, params)
     rows = cursor.fetchall()
+    total = len(rows)
+
     conn.close()
 
     results = []
@@ -108,7 +108,7 @@ def list_filtered(
             }
         )
 
-    return results
+    return results, total
 
 
 def get_by_id(sale_id: int) -> Optional[Sale]:

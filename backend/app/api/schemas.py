@@ -1,5 +1,6 @@
 """Data models for API communication"""
 from pydantic import BaseModel, Field
+from typing import List, Dict
 
 from app.domain.enums import MediaType, CopyStatus
 
@@ -20,6 +21,12 @@ class MediaResponseSchema(BaseModel):
     class Config:
         from_attributes = True
 
+class PagedMediaResponseSchema(BaseModel):
+    items: List[MediaResponseSchema]
+    total: int
+    limit: int
+    offset: int
+
 
 class CopyCreateSchema(BaseModel):
     media_id: int = Field(..., ge=1)
@@ -31,6 +38,12 @@ class CopyResponseSchema(BaseModel):
     price: float
     status: CopyStatus
 
+class PagedCopiesResponseSchema(BaseModel):
+    items: List[CopyResponseSchema]
+    total: int
+    limit: int
+    offset: int
+
 
 class SaleCreateSchema(BaseModel):
     copy_id: int = Field(..., ge=1)
@@ -39,3 +52,9 @@ class SaleResponseSchema(BaseModel):
     id: int
     copy_id: int
     price: float
+
+class PagedSalesResponseSchema(BaseModel):
+    items: List[Dict]
+    total: int
+    limit: int
+    offset: int
