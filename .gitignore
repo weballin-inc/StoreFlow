@@ -362,4 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /backend/app/database.sqbpro
-/backend/app/database.db
+# /backend/app/database.db
