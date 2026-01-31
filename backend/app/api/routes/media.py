@@ -1,14 +1,19 @@
-from fastapi import APIRouter, status, Query, Path
-from typing import Optional, List
+from fastapi import APIRouter, status, Query, Path, Body
+from typing import Optional
 
 from app.api.schemas import (
     MediaCreateSchema,
     MediaResponseSchema,
+    MediaUpdateSchema,
     PagedMediaResponseSchema
+)
+from app.services.services import (
+    add_media_title,
+    get_media_by_id,
+    update_media
 )
 from app.domain.enums import MediaType
 from app.repositories.additional_queries import MediaSortField
-from app.services.services import add_media_title, get_media_by_id
 from app.repositories import media_repo
 
 
@@ -81,3 +86,11 @@ def get_media(
     media_id: int = Path(..., ge=1),
 ):
     return get_media_by_id(media_id)
+
+
+@router.put("/{media_id}", status_code=status.HTTP_204_NO_CONTENT)
+def update_media_route(
+    media_id: int = Path(..., ge=1),
+    payload: MediaUpdateSchema = Body(...),
+):
+    update_media(media_id, payload)

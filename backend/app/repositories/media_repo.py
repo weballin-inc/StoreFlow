@@ -167,3 +167,44 @@ def create(media: MediaTitle) -> MediaTitle:
         release_year=media.release_year,
         publisher=media.publisher,
     )
+
+
+def update(
+    media_id: int,
+    title: Optional[str],
+    release_year: Optional[int],
+    publisher: Optional[str]
+) -> None:
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    fields = []
+    params = []
+
+    if title is not None:
+        fields.append("Title = ?")
+        params.append(title)
+
+    if release_year is not None:
+        fields.append("ReleaseYear = ?")
+        params.append(release_year)
+
+    if publisher is not None:
+        fields.append("Publisher = ?")
+        params.append(publisher)
+
+    if not fields:
+        return  # nothing to update
+
+    query = f"""
+        UPDATE tblMediaTitles
+        SET {",".join(fields)}
+        WHERE MediaID = ?
+    """
+
+    cursor.execute(query, params + [media_id])
+    conn.commit()
+    conn.close()
+
+

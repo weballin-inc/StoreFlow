@@ -5,6 +5,7 @@ from app.domain.enums import MediaType, CopyStatus
 from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
 from app.domain.exceptions import CopyAlreadySoldError, CopyNotFoundError
 from app.repositories import media_repo, copies_repo, sales_repo
+from backend.app.api.schemas import MediaUpdateSchema
 
 
 ############################################
@@ -49,6 +50,20 @@ def get_media_by_id(media_id: int):
         raise MediaNotFoundError(f"Media with ID {media_id} not found")
 
     return media
+
+
+def update_media(media_id: int, data: MediaUpdateSchema) -> None:
+    media = media_repo.get_by_id(media_id)
+
+    if media is None:
+        raise MediaNotFoundError(f"Media with ID {media_id} not found")
+
+    media_repo.update(
+        media_id=media_id,
+        title=data.title,
+        release_year=data.release_year,
+        publisher=data.publisher,
+    )
 
 
 ############################################

@@ -1,6 +1,6 @@
 """Data models for API communication"""
 from pydantic import BaseModel, Field
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from app.domain.enums import MediaType, CopyStatus
 
@@ -26,6 +26,11 @@ class PagedMediaResponseSchema(BaseModel):
     total: int
     limit: int
     offset: int
+
+class MediaUpdateSchema(BaseModel):
+    title: Optional[str] = Field(None, min_length=1)
+    release_year: Optional[int] = Field(None, ge=0)
+    publisher: Optional[str] = Field(None, min_length=1)
 
 
 class CopyCreateSchema(BaseModel):
