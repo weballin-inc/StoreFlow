@@ -4,6 +4,9 @@ from typing import List, Dict, Optional
 
 from app.domain.enums import MediaType, CopyStatus
 
+############################################
+#   tblMediaTitles
+############################################
 
 class MediaCreateSchema(BaseModel): 
     title: str = Field(..., min_length=1)
@@ -11,12 +14,8 @@ class MediaCreateSchema(BaseModel):
     release_year: int = Field(..., ge=0)
     publisher: str = Field(..., min_length=1)
 
-class MediaResponseSchema(BaseModel):
+class MediaResponseSchema(MediaCreateSchema):
     id: int
-    title: str
-    media_type: MediaType
-    release_year: int
-    publisher: str
 
     class Config:
         from_attributes = True
@@ -33,14 +32,18 @@ class MediaUpdateSchema(BaseModel):
     publisher: Optional[str] = Field(None, min_length=1)
 
 
-class CopyCreateSchema(BaseModel):
-    media_id: int = Field(..., ge=1)
+############################################
+#   tblMediaCopies
+############################################
+
+class CopyBaseSchema(BaseModel):
     price: float = Field(..., ge=0)
 
-class CopyResponseSchema(BaseModel):
+class CopyCreateSchema(CopyBaseSchema):
+    media_id: int = Field(..., ge=1)
+
+class CopyResponseSchema(CopyCreateSchema):
     id: int
-    media_id: int
-    price: float
     status: CopyStatus
 
 class PagedCopiesResponseSchema(BaseModel):
@@ -49,13 +52,18 @@ class PagedCopiesResponseSchema(BaseModel):
     limit: int
     offset: int
 
+class CopyUpdateSchema(CopyBaseSchema):
+    pass
+
+############################################
+#   tblSales
+############################################
 
 class SaleCreateSchema(BaseModel):
     copy_id: int = Field(..., ge=1)
 
-class SaleResponseSchema(BaseModel):
+class SaleResponseSchema(SaleCreateSchema):
     id: int
-    copy_id: int
     price: float
 
 class PagedSalesResponseSchema(BaseModel):

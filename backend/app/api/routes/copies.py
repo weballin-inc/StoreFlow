@@ -1,13 +1,14 @@
-from fastapi import APIRouter, status, Path, Query, HTTPException
+from fastapi import APIRouter, status, Path, Query, Body, HTTPException
 from typing import Optional
 
 from app.api.schemas import (
     CopyCreateSchema, 
     CopyResponseSchema, 
-    PagedCopiesResponseSchema
+    PagedCopiesResponseSchema,
+    CopyUpdateSchema
 )
 from app.domain.enums import CopyStatus
-from app.services.services import add_copy
+from app.services.services import add_copy, update_copy_price
 from app.repositories import copies_repo
 from app.repositories.additional_queries import CopiesSortField
 
@@ -67,3 +68,14 @@ def get_copy(
         )
 
     return copy
+
+
+@router.put(
+    "/{copy_id}/price",
+    status_code=204,
+)
+def update_copy_price_route(
+    copy_id: int = Path(..., ge=1),
+    payload: CopyUpdateSchema = Body(...),
+):
+    update_copy_price(copy_id, payload.price)

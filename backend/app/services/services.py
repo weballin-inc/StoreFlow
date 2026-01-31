@@ -86,6 +86,15 @@ def add_copy(media_id: int, price: float) -> MediaCopy:
     return copies_repo.create(copy)
 
 
+def update_copy_price(copy_id: int, price: float) -> None:
+    copy = copies_repo.get_by_id(copy_id)
+
+    if copy is None:
+        raise CopyNotFoundError(f"Copy {copy_id} not found")
+
+    copies_repo.update_price(copy_id, price)
+
+
 ############################################
 #   tblSales
 ############################################
