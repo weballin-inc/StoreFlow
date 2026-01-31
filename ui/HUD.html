@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8-sig">
 <link rel="stylesheet" href="style.css">
 <title>StoreFlow</title>
 </head>
@@ -9,15 +9,69 @@
 	<header>
 		<h1>StoreFlow</h1>
 	<nav>
-		<button>Refresh</button>
+		<button id="refresh">Refresh</button>
 		<input placeholder="Search Item"></input>
 	</nav>
 	</header>
-	<main>
-		<p>Items</p>
-	</main>
+    <main>
+        <table id="items" border="1" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Tytu³</th>
+                    <th>Typ</th>
+                    <th>Rok</th>
+                    <th>Wydawca</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+</main>
+
 	<footer>
 		<button>Confirm</button>
 	</footer>
+
+<script>
+document.getElementById("refresh").addEventListener("click", () => {
+    const tbody = document.querySelector("#items tbody");
+
+    // wyczyœæ stare wiersze
+    tbody.innerHTML = "";
+
+    fetch("http://127.0.0.1:8000/media?order=asc&limit=20&offset=0", {
+        method: "GET",
+        headers: {
+            "accept": "application/json"
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("B³¹d HTTP: " + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        data.items.forEach(item => {
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+                <td>${item.title}</td>
+                <td>${item.media_type}</td>
+                <td>${item.release_year}</td>
+                <td>${item.publisher}</td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+    })
+    .catch(error => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="5">B³¹d: ${error.message}</td>`;
+        tbody.appendChild(tr);
+    });
+});
+</script>
+
 </body>
 </html>

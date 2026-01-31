@@ -123,22 +123,6 @@ def list_filtered(
     ], total
 
 
-def update_status(copy_id: int, status: CopyStatus) -> None:
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        UPDATE tblMediaCopies
-        SET Status = ?
-        WHERE CopyID = ?
-        """,
-        (status.value, copy_id),
-    )
-
-    conn.commit()
-
-
 def update_status_with_conn(conn, copy_id: int, status: CopyStatus) -> None:
     cursor = conn.cursor()
 
@@ -150,3 +134,20 @@ def update_status_with_conn(conn, copy_id: int, status: CopyStatus) -> None:
         """,
         (status.value, copy_id),
     )
+
+
+def update_price(copy_id: int, price: float) -> None:
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE tblMediaCopies
+        SET Price = ?
+        WHERE CopyID = ?
+        """,
+        (price, copy_id)
+    )
+
+    conn.commit()
+    conn.close()

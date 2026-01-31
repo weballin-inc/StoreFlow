@@ -1,8 +1,8 @@
 body {
-	text-color: #FFFFFF;
+	font-family: system-ui;
 	background-color: #969696;
 	height: 100%;
-	width: 100%;
+	width: 99%;
 }
 
 header {
@@ -25,6 +25,28 @@ main {
 	width: 100%;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+td {
+  padding: 1px;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+  background-color: #f7f7f7;
+}
+
+th {
+  background: #f0f0f0;
+  text-align: left;
+  padding: 1px;
+  border-bottom: 1px solid #ddd;
+}
+
 footer {
   position: fixed;
   bottom: 0;
@@ -32,7 +54,6 @@ footer {
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  align-items: center;
   padding: 10px 20px;
   box-sizing: border-box;
   background-color: #3B3B3B;
