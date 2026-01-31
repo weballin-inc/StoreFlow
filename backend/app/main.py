@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.media import router as media_router
 from app.api.routes.copies import router as copies_router
@@ -11,6 +12,15 @@ from app.core.init_db import init_db
 def create_app() -> FastAPI:
     app = FastAPI(title="StoreFlow API", version="0.6.7")
 
+
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     # Initialize database
     init_db()
 
