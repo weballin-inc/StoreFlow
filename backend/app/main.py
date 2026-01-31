@@ -10,7 +10,7 @@ from app.api.error_handlers import register_error_handlers
 from app.core.init_db import init_db
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="StoreFlow API", version="0.8")
+    app = FastAPI(title="StoreFlow API", version="0.1")
 
     # Allow requests originating from any source
     app.add_middleware(
