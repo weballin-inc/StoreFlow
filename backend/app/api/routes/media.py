@@ -13,7 +13,7 @@ from app.services.services import (
     update_media
 )
 from app.domain.enums import MediaType
-from app.repositories.additional_queries import MediaSortField
+from app.repositories.enums_repo import MediaSortField
 from app.repositories import media_repo
 
 
@@ -23,13 +23,22 @@ router = APIRouter(prefix="/media", tags=["Media"])
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=MediaResponseSchema)
 def create_media(payload: MediaCreateSchema):
     """
-    Add new media title.
+    Create (multiple) media records with specified columns
+    Constraints:
+    - Title MUST be provided
+    - MediaType MUST be in {'BOOK', 'GAME', 'MOVIE'}
+    - ReleaseYear MUST be >0
+    - Publisher MUST be provided
+    - Amount must be >=0
+    - Price must be >0
     """
     media = add_media_title(
         title=payload.title,
         media_type=payload.media_type,
         release_year=payload.release_year,
         publisher=payload.publisher,
+        amount=payload.amount,
+        price=payload.price
     )
 
     return media

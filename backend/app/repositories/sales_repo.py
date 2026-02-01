@@ -36,7 +36,7 @@ def list_filtered(
 
         FROM tblSales s
         JOIN tblMediaCopies c ON s.CopyID = c.CopyID
-        JOIN tblMediaTitles m ON c.MediaID = m.MediaID
+        JOIN tblMedia m ON c.MediaID = m.MediaID
 
         WHERE 1 = 1
     """

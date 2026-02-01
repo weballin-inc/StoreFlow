@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from app.core.database import get_connection
 from app.domain.enums import MediaType
-from app.domain.models import MediaTitle
+from app.domain.models import Media
 from app.repositories.enums_repo import MediaSortField
 
 
@@ -18,14 +18,14 @@ def list_filtered(
     order: str = "asc",
     limit: int = 20,
     offset: int = 0,
-) -> List[MediaTitle]:
+) -> List[Media]:
 
     conn = get_connection()
     cursor = conn.cursor()
 
     query = """
         SELECT MediaID, Title, MediaType, ReleaseYear, Publisher
-        FROM tblMediaTitles
+        FROM tblMedia
         WHERE 1 = 1
     """
     params = []
@@ -65,7 +65,7 @@ def list_filtered(
     total = len(rows)
 
     return [
-        MediaTitle(
+        Media(
             id=row[0],
             title=row[1],
             media_type=MediaType(row[2]),
@@ -80,17 +80,19 @@ def list_filtered(
 def get_by_title_and_type(
     title: str,
     media_type: MediaType
-) -> Optional[MediaTitle]:
+) -> Optional[Media]:
     """
-    Returns Title if found, otherwise None.
+    Returns tblMedia record if found by `Title`+`MediaType`, otherwise None.
     """
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute(
         """
-        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher
-        FROM tblMediaTitles
+        SELECT 
+            MediaID, Title, MediaType,
+            ReleaseYear, Publisher, Amount, Price
+        FROM tblMedia
         WHERE Title = ? AND MediaType = ?
         """,
         (title, media_type.value),
@@ -101,23 +103,24 @@ def get_by_title_and_type(
     if row is None:
         return None
 
-    return MediaTitle(
+    return Media(
         id=row[0],
         title=row[1],
-        media_type=MediaType(row[2]),
+        media_type=row[2],
         release_year=row[3],
         publisher=row[4],
+        amount=row[5]
     )
 
 
-def get_by_id(media_id: int) -> Optional[MediaTitle]:
+def get_by_id(media_id: int) -> Optional[Media]:
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute(
         """
         SELECT MediaID, Title, MediaType, ReleaseYear, Publisher
-        FROM tblMediaTitles
+        FROM tblMedia
         WHERE MediaID = ?
         """,
         (media_id,),
@@ -128,7 +131,7 @@ def get_by_id(media_id: int) -> Optional[MediaTitle]:
     if row is None:
         return None
 
-    return MediaTitle(
+    return Media(
         id=row[0],
         title=row[1],
         media_type=MediaType(row[2]),
@@ -138,34 +141,39 @@ def get_by_id(media_id: int) -> Optional[MediaTitle]:
 
 
 # Used to insert
-def create(media: MediaTitle) -> MediaTitle:
+def create(media: Media) -> Media:
     """
-    Inserts a new MediaTitle into the database and returns it with ID.
+    Inserts a new tblMedia record into the database and returns it with ID.
     """
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute(
         """
-        INSERT INTO tblMediaTitles (Title, MediaType, ReleaseYear, Publisher)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO tblMedia (Title, MediaType, ReleaseYear, Publisher, Amount, Price)
+        VALUES (?, ?, ?, ?, ?, ?)
         """,
         (
             media.title,
             media.media_type.value,
             media.release_year,
-            media.publisher
+            media.publisher,
+            media.amount,
+            media.price
         ),
     )
 
     conn.commit()
+    conn.close()
 
-    return MediaTitle(
+    return Media(
         id=cursor.lastrowid,
         title=media.title,
         media_type=media.media_type,
         release_year=media.release_year,
         publisher=media.publisher,
+        amount=media.amount,
+        price=media.price
     )
 
 
@@ -173,7 +181,8 @@ def update(
     media_id: int,
     title: Optional[str],
     release_year: Optional[int],
-    publisher: Optional[str]
+    publisher: Optional[str],
+    price: Optional[float]
 ) -> None:
     
     conn = get_connection()
@@ -194,11 +203,15 @@ def update(
         fields.append("Publisher = ?")
         params.append(publisher)
 
+    if price is not None:
+        fields.append("Price = ?")
+        params.append(price)
+
     if not fields:
         return  # nothing to update
 
     query = f"""
-        UPDATE tblMediaTitles
+        UPDATE tblMedia
         SET {",".join(fields)}
         WHERE MediaID = ?
     """

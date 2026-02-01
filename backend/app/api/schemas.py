@@ -31,8 +31,10 @@ class PagedMediaResponseSchema(BaseModel):
 
 class MediaUpdateSchema(BaseModel):
     title: Optional[str] = Field(None, min_length=1)
+    media_type: Optional[MediaType]
     release_year: Optional[int] = Field(None, ge=0)
     publisher: Optional[str] = Field(None, min_length=1)
+    price: Optional[float] = Field(None, ge=0)
 
 # class MediaDeleteSchema(BaseModel):
 #    FORBIDDEN
