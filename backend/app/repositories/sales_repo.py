@@ -4,7 +4,7 @@ from typing import List, Dict, Optional
 
 from app.core.database import get_connection
 from app.domain.models import Sale
-from app.repositories.additional_queries import SalesSortField
+from app.repositories.enums_repo import SalesSortField
 
 
 def list_filtered(

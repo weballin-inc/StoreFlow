@@ -8,7 +8,7 @@ from app.api.schemas import (
 )
 from app.domain.enums import MediaType
 from app.repositories import sales_repo
-from app.repositories.additional_queries import SalesSortField
+from app.repositories.enums_repo import SalesSortField
 from app.services.services import sell_copy
 
 

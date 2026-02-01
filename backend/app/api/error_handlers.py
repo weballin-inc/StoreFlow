@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from app.domain.exceptions import (
     MediaAlreadyExistsError,
     MediaNotFoundError,
+    MediaAlreadySoldOut
 )
 
 def media_already_exists_handler(
@@ -32,6 +33,19 @@ def media_not_found_handler(
     )
 
 
+def media_already_sold_out(
+    request: Request,
+    exc: MediaAlreadySoldOut,
+):
+    return JSONResponse(
+        status_code=status.HTTP_406_NOT_ACCEPTABLE,
+        content={
+            "error": "MEDIA_ALREADY_SOLD_OUT",
+            "message": str(exc),
+        },
+    )
+
+
 def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(
         MediaAlreadyExistsError,
@@ -41,4 +55,9 @@ def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(
         MediaNotFoundError,
         media_not_found_handler,
+    )
+
+    app.add_exception_handler(
+        MediaAlreadySoldOut,
+        media_already_sold_out,
     )

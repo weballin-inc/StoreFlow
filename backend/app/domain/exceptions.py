@@ -15,3 +15,6 @@ class MediaNotFoundError(DomainError):
     pass
 
 
+class MediaAlreadySoldOut(DomainError):
+    """Raised when Media.Amount = 0"""
+    pass
