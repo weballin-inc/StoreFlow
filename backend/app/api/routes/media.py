@@ -1,17 +1,20 @@
+import traceback
 from fastapi import APIRouter, status, Query, Path, Body
-from typing import Optional
+from typing import Optional, List
 
 from app.api.schemas import (
     MediaCreateSchema,
     MediaResponseSchema,
     MediaUpdateSchema,
-    PagedMediaResponseSchema
+    PagedMediaResponseSchema,
+    MediaBatchResultSchema
 )
 from app.services.services import (
     add_media_title,
     get_media_by_id,
     update_media
 )
+from app.domain.exceptions import MediaAlreadyExistsError
 from app.domain.enums import MediaType
 from app.repositories.enums_repo import MediaSortField
 from app.repositories import media_repo
@@ -20,28 +23,60 @@ from app.repositories import media_repo
 router = APIRouter(prefix="/media", tags=["Media"])
 
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=MediaResponseSchema)
-def create_media(payload: MediaCreateSchema):
+@router.post("", status_code=status.HTTP_200_OK, response_model=List[MediaBatchResultSchema])
+def create_media(payload: List[MediaCreateSchema]):
     """
     Create (multiple) media records with specified columns
     Constraints:
     - Title MUST be provided
-    - MediaType MUST be in {'BOOK', 'GAME', 'MOVIE'}
-    - ReleaseYear MUST be >0
+    - MediaType MUST be in `{'BOOK', 'GAME', 'MOVIE'}`
+    - ReleaseYear MUST be `>0`
     - Publisher MUST be provided
-    - Amount must be >=0
-    - Price must be >0
+    - Amount must be `>=0`
+    - Price must be `>0`
     """
-    media = add_media_title(
-        title=payload.title,
-        media_type=payload.media_type,
-        release_year=payload.release_year,
-        publisher=payload.publisher,
-        amount=payload.amount,
-        price=payload.price
-    )
 
-    return media
+    results: list[MediaBatchResultSchema] = []
+
+    for item in payload:
+        try:
+            media = add_media_title(
+                title=item.title,
+                media_type=item.media_type,
+                release_year=item.release_year,
+                publisher=item.publisher,
+                amount=item.amount,
+                price=item.price
+            )
+
+            results.append(
+                MediaBatchResultSchema(
+                    id=media.id,
+                    title=item.title,
+                    status="SUCCESS"
+                )
+            )
+
+        except MediaAlreadyExistsError as e:
+            results.append(
+                MediaBatchResultSchema(
+                    title=item.title,
+                    status="FAIL",
+                    reason=f"{str(e)}"
+                )
+            )
+
+        except Exception as e:
+            results.append(
+                MediaBatchResultSchema(
+                    title=item.title,
+                    status="FAIL",
+                    reason=f"Internal Server Error: {str(e)}"
+                )
+            )
+            traceback.print_exc()
+
+    return results
 
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=PagedMediaResponseSchema)

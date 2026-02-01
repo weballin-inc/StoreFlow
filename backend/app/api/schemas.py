@@ -1,6 +1,6 @@
 """Data models for API communication"""
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Literal
 from datetime import datetime
 
 from app.domain.enums import MediaType
@@ -19,7 +19,6 @@ class MediaCreateSchema(BaseModel):
 
 class MediaResponseSchema(MediaCreateSchema):
     id: int
-
     class Config:
         from_attributes = True
 
@@ -28,6 +27,12 @@ class PagedMediaResponseSchema(BaseModel):
     total: int
     limit: int
     offset: int
+
+class MediaBatchResultSchema(BaseModel):
+    id: int | None = None
+    title: str
+    status: Literal["SUCCESS", "FAIL"]
+    reason: str | None = None
 
 class MediaUpdateSchema(BaseModel):
     title: Optional[str] = Field(None, min_length=1)

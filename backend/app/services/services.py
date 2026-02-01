@@ -37,7 +37,7 @@ def add_media_title(
     existing = media_repo.get_by_title_and_type(title, media_type)
     if existing is not None:
         raise MediaAlreadyExistsError(
-            f"Media '{Media.title}' of type '{Media.media_type.value}' already exists. ID {Media.id}"
+            f"Media '{existing.title}' of type '{existing.media_type}' already exists. ID {existing.id}"
         )
 
     media = Media(

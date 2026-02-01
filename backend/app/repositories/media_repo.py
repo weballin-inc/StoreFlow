@@ -109,7 +109,8 @@ def get_by_title_and_type(
         media_type=row[2],
         release_year=row[3],
         publisher=row[4],
-        amount=row[5]
+        amount=row[5],
+        price=row[6]
     )
 
 
@@ -119,7 +120,7 @@ def get_by_id(media_id: int) -> Optional[Media]:
 
     cursor.execute(
         """
-        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher
+        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher, Amount, Price
         FROM tblMedia
         WHERE MediaID = ?
         """,
@@ -137,6 +138,8 @@ def get_by_id(media_id: int) -> Optional[Media]:
         media_type=MediaType(row[2]),
         release_year=row[3],
         publisher=row[4],
+        amount=row[5],
+        price=row[6]
     )
 
 
