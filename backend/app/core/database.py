@@ -1,8 +1,4 @@
-"""
-Polaczenie z baza danych
-Tworzenie sesji
-Inicjalizacja tabel
-"""
+"""Database engine"""
 
 import sqlite3
 from pathlib import Path

@@ -35,24 +35,21 @@ W backendzie zawarte jest również API, dzięki czemu frontend otrzymuje wyłą
 
 Projekt ogranicza zakres operacji modyfikujących dane do tych, które są logicznie uzasadnione w kontekście biznesowym systemu. Przykładowo, rekordy sprzedaży nie podlegają edycji, ponieważ wszystkie ich parametry są ustalane jednorazowo w momencie realizacji transakcji.
 
-Podobnie operacje `POST /copies` oraz `POST /sales` mają konkretne zasady zgodne z logiką biznesową.
+Podobnie operacje `POST /media` oraz `POST /sales` mają konkretne zasady zgodne z logiką biznesową.
 
 #### Endpointy API
-- tblMediaTitles `/media`
-    - `POST /media`
-    - `GET /media | GET /media/{media_id}`
-    - `PUT /media/{media_id}`
-    - `DELETE /media/{media_id}`
-- tblMediaCopies `/copies`
-    - `POST /copies`
-    - `GET /copies | GET/copies/{copy_id}`
-    - `PUT /copies/{copy_id}/price`
-    - `DELETE /copies/{copy_id}`
-- tblSales `/sales`
-    - `POST /sales`
-    - `GET /sales | GET /sales/{sale_id}`
-    - `405: Method not allowed`
-    - `DELETE /sales/{sale_id}`
+| Type of operation                              | API endpoint                     | Description                                                                                                                                                                                                                                                                                                         |
+| ---------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Create a Media record                          | `POST /media`                    | Create media record(s) with specified columns.<br><br>**Constraints:**<br>- Title **MUST** be provided<br>- MediaType **MUST** be in `{BOOK, GAME, MOVIE}`<br>- ReleaseYear **MUST** be `> 0`<br>- Publisher **MUST** be provided<br>- Amount **MUST** be `>= 0`<br>- Price **MUST** be `> 0`                       |
+| List all Media records (filtered)              | `GET /media`                     | List all media records that fulfill the provided filters. Every field can be used as a filter.                                                                                                                                                                                                                      |
+| Edit a specific Media record (specific fields) | `PUT /media/{media_id}`          | Edit specific fields of the media record with given `media_id`.<br><br>**Editable fields:**<br>- Title<br>- MediaType (constraint: `Title + MediaType` must be unique)<br>- ReleaseYear<br>- Publisher<br>- Amount (**RESTRICTED** – use `PATCH /media/{media_id}/amount`)<br>- Price (constraint: cannot be `< 0`) |
+| Modify Amount (inventory correction)           | `PATCH /media/{media_id}/amount` | Modify media stock amount using delta value.<br><br>**Rules:**<br>- Positive `amount` → `Amount += amount`<br>- Negative `amount` → `Amount -= amount`<br>- Resulting `Amount` **MUST** be `>= 0`                                                                                                                   |
+| Delete Media record                            | —                                | **DELETE RESTRICTED**.<br>Rows can only be removed directly from the database using an appropriate SQL statement.                                                                                                                                                                                                   |
+| Create a Sale record                           | `POST /sales/{media_id}`         | Create a sale record for the given `media_id`.<br><br>**Process:**<br>- `tblMedia.Amount` is reduced by `1`<br>- `rowcount` check ensures `Amount > 0` and valid `MediaID`<br>- All operations are executed within a **single database transaction**<br><br>**Automatically filled fields:**<br>- Price is taken from `tblMedia.Price` (snapshot)<br>- Date is taken from database `DATETIME()` |
+| List all Sale records (filtered)               | `GET /sales`                     | List all sale records with joined `tblMedia` data. Can be filtered by date range and `MediaID`.                                                                                                                                                                                                                                                                                                 |
+| Update Sale record                             | —                                | **UPDATE RESTRICTED**.<br>Sale records are immutable and cannot be modified.                                                                                                                                                                                                                                                                                                                    |
+| Delete Sale record                             | —                                | **DELETE RESTRICTED**.<br>Sale records cannot be removed to preserve sales history.                                                                                                                                                                                                                                                                                                             |
+
 
 ### Struktura bazy danych
 Baza danych SQLite składa się z prostych tabel, a całość zawarta jest w pojedyńczym pliku `dabatase.db`, dzięki czemu możliwe jest tworzenie backupów i pełne formatowanie bazy danych bez potrzeby rozbierania kodu na czynniki pierwsze.
@@ -60,25 +57,20 @@ Baza danych SQLite składa się z prostych tabel, a całość zawarta jest w poj
 Struktura tabel jest relacyjna, gdzie głównymi kluczami są ID każdego z przedmiotów. Każdy fizyczny egzemplarz danego utworu stanowi oddzielny wiersz w odpowiedniej tabeli.
 
 #### Tabele
-- tblMediaTitles
+- tblMedia
     - MediaID (INTEGER) PRIMARY KEY
-    - MediaTitle (NVARCHAR)
-    - MediaType (VARCHAR)
-    - MediaGenre (VARCHAR)
-    - MediaDate (DATETIME)
-
-- tblMediaCopies
-    - CopyID (INTEGER) PRIMARY KEY
-    - MediaID (INTEGER) FOREIGN KEY → tblMediaTitles(MediaID)
-    - CopyStatus (VARCHAR)
-    - CopyPrice (DECIMAL)
+    - Title (TEXT)
+    - MediaType (TEXT)
+    - ReleaseYear (DATE)
+    - Publisher (TEXT)
+    - Amount (INTEGER)
+    - Price (REAL)
 
 - tblSales
     - SaleID (INTEGER) PRIMARY KEY
-    - CopyID (INTEGER) FOREIGN KEY → tblMediaCopies(CopyID)
-    - SaleDate (DATETIME)
-    - SalePrice (DECIMAL)
-    - EmployeeID (INTEGER) FOREIGN KEY → tblEmployees(EmployeeID)
+    - MediaID (INTEGER) FOREIGN KEY → tblMedia(MediaID)
+    - Price (REAL)
+    - Date (DATETIME)
 
 ### Technologie
 Użyte narzędzia i biblioteki dostępne są również w pliku `requirements.txt`
