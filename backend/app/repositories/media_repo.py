@@ -91,7 +91,7 @@ def get_by_title_and_type(
         """
         SELECT 
             MediaID, Title, MediaType,
-            ReleaseYear, Publisher, Amount, Price
+            ReleaseYear, Publisher, Quantity, Price
         FROM tblMedia
         WHERE Title = ? AND MediaType = ?
         """,
@@ -109,7 +109,7 @@ def get_by_title_and_type(
         media_type=row[2],
         release_year=row[3],
         publisher=row[4],
-        amount=row[5],
+        quantity=row[5],
         price=row[6]
     )
 
@@ -120,7 +120,7 @@ def get_by_id(media_id: int) -> Optional[Media]:
 
     cursor.execute(
         """
-        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher, Amount, Price
+        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher, Quantity, Price
         FROM tblMedia
         WHERE MediaID = ?
         """,
@@ -138,7 +138,7 @@ def get_by_id(media_id: int) -> Optional[Media]:
         media_type=MediaType(row[2]),
         release_year=row[3],
         publisher=row[4],
-        amount=row[5],
+        quantity=row[5],
         price=row[6]
     )
 
@@ -153,7 +153,7 @@ def create(media: Media) -> Media:
 
     cursor.execute(
         """
-        INSERT INTO tblMedia (Title, MediaType, ReleaseYear, Publisher, Amount, Price)
+        INSERT INTO tblMedia (Title, MediaType, ReleaseYear, Publisher, Quantity, Price)
         VALUES (?, ?, ?, ?, ?, ?)
         """,
         (
@@ -161,7 +161,7 @@ def create(media: Media) -> Media:
             media.media_type.value,
             media.release_year,
             media.publisher,
-            media.amount,
+            media.quantity,
             media.price
         ),
     )
@@ -175,7 +175,7 @@ def create(media: Media) -> Media:
         media_type=media.media_type,
         release_year=media.release_year,
         publisher=media.publisher,
-        amount=media.amount,
+        quantity=media.quantity,
         price=media.price
     )
 

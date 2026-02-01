@@ -5,6 +5,8 @@ class MediaSortField(str, Enum):
     media_type = "MediaType"
     release_year = "ReleaseYear"
     publisher = "Publisher"
+    quantity = "Quantity"
+    price = "Price"
 
 
 class SalesSortField(str, Enum):

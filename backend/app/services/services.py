@@ -17,7 +17,7 @@ def add_media_title(
     media_type: MediaType,
     release_year: int,
     publisher: str,
-    amount: int,
+    quantity: int,
     price: float
 ) -> Media:
     """
@@ -28,7 +28,7 @@ def add_media_title(
     - MediaType MUST be in {'BOOK', 'GAME', 'MOVIE'}
     - ReleaseYear MUST be >0
     - Publisher MUST be provided
-    - Amount must be >=0
+    - quantity must be >=0
     - Price must be >0
 
     Title+MediaType must be unique
@@ -46,7 +46,7 @@ def add_media_title(
         media_type=media_type,
         release_year=release_year,
         publisher=publisher,
-        amount=amount,
+        quantity=quantity,
         price=price
     )
 

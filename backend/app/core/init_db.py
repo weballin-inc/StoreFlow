@@ -16,7 +16,7 @@ def init_db() -> None:
             MediaType TEXT NOT NULL,
             ReleaseYear INTEGER NOT NULL,
             Publisher TEXT NOT NULL,
-            Amount INTEGER NOT NULL,
+            Quantity INTEGER NOT NULL,
             Price REAL NOT NULL,
 
             UNIQUE(Title, MediaType)

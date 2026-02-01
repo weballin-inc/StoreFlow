@@ -14,7 +14,7 @@ class MediaCreateSchema(BaseModel):
     media_type: MediaType
     release_year: int = Field(..., ge=0)
     publisher: str = Field(..., min_length=1)
-    amount: int = Field(..., ge=0)
+    quantity: int = Field(..., ge=0)
     price: float = Field(..., ge=0)
 
 class MediaResponseSchema(MediaCreateSchema):

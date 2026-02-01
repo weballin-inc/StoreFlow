@@ -12,7 +12,7 @@ class Media:
     media_type: MediaType
     release_year: int
     publisher: str
-    amount: int
+    quantity: int
     price: float
 
 

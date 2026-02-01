@@ -16,5 +16,5 @@ class MediaNotFoundError(DomainError):
 
 
 class MediaAlreadySoldOut(DomainError):
-    """Raised when Media.Amount = 0"""
+    """Raised when Media.quantity = 0"""
     pass
