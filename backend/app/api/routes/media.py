@@ -14,7 +14,7 @@ from app.api.schemas.media_query import MediaListQuerySchema
 from app.services.media_services import (
     add_media_title,
     get_media_by_id,
-    update_media
+    update_media_by_id
 )
 from app.api.validators import (
     ranges,
@@ -54,14 +54,7 @@ def create_media(payload: List[MediaCreateSchema]):
 
     for item in payload:
         try:
-            media = add_media_title(
-                title=item.title,
-                media_type=item.media_type,
-                release_year=item.release_year,
-                publisher=item.publisher,
-                quantity=item.quantity,
-                price=item.price
-            )
+            media = add_media_title(item)
 
             results.append(
                 MediaBatchResultSchema(
@@ -120,16 +113,25 @@ def list_media(query: MediaListQuerySchema = Depends()):
         "offset": query.offset,
     }
 
-# @router.get("/{media_id}", status_code=status.HTTP_200_OK, response_model=MediaResponseSchema)
-# def get_media(
-#     media_id: int = Path(..., ge=1),
-# ):
-#     return get_media_by_id(media_id)
 
+@router.put("/{media_id}", status_code=status.HTTP_200_OK, response_model=MediaResponseSchema)
+def put_media(media_id: int, payload: MediaUpdateSchema):
+    """
+    Edit specific record based on MediaID
+    You can use it to edit single or multiple fields.
 
-@router.put("/{media_id}", status_code=status.HTTP_204_NO_CONTENT)
-def update_media_route(
-    media_id: int = Path(..., ge=1),
-    payload: MediaUpdateSchema = Body(...),
-):
-    update_media(media_id, payload)
+    Allowed fields:
+    - `title`: Title
+    - `media_type`: MediaType, but must be unique with Title+MediaType
+    - `release_year`: ReleaseYear
+    - `publisher`: Publisher
+    - `quantity`: Quantity, must be >=0
+    - `price`: Price, must be >= 0
+    """
+
+    media = update_media_by_id(
+        media_id=media_id,
+        data=payload
+    )
+
+    return media

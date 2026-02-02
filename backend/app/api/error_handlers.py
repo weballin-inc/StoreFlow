@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
 from app.domain.exceptions import (
+    InvalidKeyError,
+    InvalidValueError,
     MediaAlreadyExistsError,
     MediaNotFoundError,
     MediaAlreadySoldOut
@@ -45,6 +47,30 @@ def media_already_sold_out(
         },
     )
 
+def invalid_value_error(
+    request: Request,
+    exc: InvalidValueError
+):
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content={
+            "error": "INVALID_VALUE_ERROR",
+            "message": str(exc)
+        },
+    )
+
+
+def invalid_key_error(
+    request: Request,
+    exc: InvalidKeyError
+):
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content={
+            "error": "INVALID_KEY_ERROR",
+            "message": str(exc)
+        },
+    )
 
 def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(
@@ -60,4 +86,14 @@ def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(
         MediaAlreadySoldOut,
         media_already_sold_out,
+    )
+
+    app.add_exception_handler(
+        InvalidValueError,
+        invalid_value_error
+    )
+
+    app.add_exception_handler( # check if useful
+        InvalidKeyError,
+        invalid_key_error
     )

@@ -16,10 +16,14 @@ class MediaCreateSchema(BaseModel):
 
 class MediaUpdateSchema(BaseModel):
     title: Optional[str] = Field(None, min_length=1)
-    media_type: Optional[MediaType]
+    media_type: Optional[MediaType] = Field(None, min_length=1)
     release_year: Optional[int] = Field(None, ge=0)
     publisher: Optional[str] = Field(None, min_length=1)
+    quantity: Optional[int] = Field(None, ge=0)
     price: Optional[float] = Field(None, ge=0)
+
+    class Config:
+        extra = "forbid"
 
 # ---------- Response ----------
 

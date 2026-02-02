@@ -18,3 +18,12 @@ class MediaNotFoundError(DomainError):
 class MediaAlreadySoldOut(DomainError):
     """Raised when Media.quantity = 0"""
     pass
+
+
+class InvalidValueError(DomainError):
+    """Raised when Media.price is changed to negative value"""
+    pass
+
+class InvalidKeyError(DomainError):
+    """Raised when provided key is invalid for the query"""
+    pass

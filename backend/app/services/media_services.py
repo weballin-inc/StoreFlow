@@ -1,21 +1,19 @@
 """Business logic for tblMedia"""
 
-from app.api.schemas.media import MediaUpdateSchema
+from app.api.schemas.media import MediaCreateSchema, MediaUpdateSchema
 from app.domain.enums import MediaType
-from app.domain.exceptions import MediaAlreadyExistsError, MediaNotFoundError
+from app.domain.exceptions import (
+    InvalidKeyError,
+    InvalidValueError,
+    MediaAlreadyExistsError,
+    MediaNotFoundError
+)
 from app.domain.models import Media
 from app.repositories import media_repo
 
 
 # ------- Create/Add/Insert Media -------
-def add_media_title(
-    title: str,
-    media_type: MediaType,
-    release_year: int,
-    publisher: str,
-    quantity: int,
-    price: float
-) -> Media:
+def add_media_title(data: MediaCreateSchema) -> Media:
     """
     Create a new tblMedia record
 
@@ -30,20 +28,23 @@ def add_media_title(
     Title+MediaType must be unique
     """
 
-    existing = media_repo.get_by_title_and_type(title, media_type)
+    existing = media_repo.get_by_title_and_type(data.title, data.media_type)
     if existing is not None:
         raise MediaAlreadyExistsError(
             f"Media '{existing.title}' of type '{existing.media_type}' already exists. ID {existing.id}"
         )
 
+    if data.price is not None and data.price < 0:
+        raise InvalidValueError(f"Price cannot be less than 0. You've given '{data.price}'")
+
     media = Media(
         id=None,
-        title=title,
-        media_type=media_type,
-        release_year=release_year,
-        publisher=publisher,
-        quantity=quantity,
-        price=price
+        title=data.title,
+        media_type=data.media_type,
+        release_year=data.release_year,
+        publisher=data.publisher,
+        quantity=data.quantity,
+        price=data.price
     )
 
     return media_repo.create(media)
@@ -63,17 +64,37 @@ def get_media_by_id(media_id: int):
 
 
 # ------- Update Media -------
-def update_media(media_id: int, data: MediaUpdateSchema) -> None:
-    media = media_repo.get_by_id(media_id)
+def update_media_by_id(
+    media_id: int,
+    data: MediaUpdateSchema,
+) -> Media:
 
-    if media is None:
+    # --- get existing ---
+    existing = media_repo.get_by_id(media_id)
+    if existing is None:
         raise MediaNotFoundError(f"Media with ID {media_id} not found")
 
-    media_repo.update(
-        media_id=media_id,
-        title=data.title,
-        release_year=data.release_year,
-        publisher=data.publisher,
-        price=data.price,
+    # --- Title + MediaType uniqueness ---
+    new_title = (data.title if data.title is not None else existing.title)
+    new_media_type = (data.media_type if data.media_type is not None else existing.media_type)
+
+    conflict = media_repo.get_by_title_and_type(new_title, new_media_type)
+    if conflict is not None and conflict.id != media_id:
+        raise MediaAlreadyExistsError(
+            f"Media '{new_title}' of type '{new_media_type.value}' already exists at ID {conflict.id}."
+        )
+
+    # --- apply updates ---
+    updated = Media(
+        id=media_id,
+        title=new_title,
+        media_type=new_media_type,
+        release_year=(data.release_year if data.release_year is not None else existing.release_year),
+        publisher=(data.publisher if data.publisher is not None else existing.publisher),
+        quantity=(data.quantity if data.quantity is not None else existing.quantity),
+        price=(data.price if data.price is not None else existing.price),
     )
+
+    return media_repo.update(updated)
+
 

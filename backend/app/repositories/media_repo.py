@@ -1,6 +1,6 @@
 """tblMedia CRUD"""
 
-from typing import List, Optional
+from typing import Optional
 
 from app.core.database import get_connection
 from app.domain.enums import MediaType
@@ -247,47 +247,36 @@ def create(media: Media) -> Media:
     )
 
 
-def update(
-    media_id: int,
-    title: Optional[str],
-    release_year: Optional[int],
-    publisher: Optional[str],
-    price: Optional[float]
-) -> None:
-    
+def update(media: Media) -> Media:
     conn = get_connection()
     cursor = conn.cursor()
 
-    fields = []
-    params = []
-
-    if title is not None:
-        fields.append("Title = ?")
-        params.append(title)
-
-    if release_year is not None:
-        fields.append("ReleaseYear = ?")
-        params.append(release_year)
-
-    if publisher is not None:
-        fields.append("Publisher = ?")
-        params.append(publisher)
-
-    if price is not None:
-        fields.append("Price = ?")
-        params.append(price)
-
-    if not fields:
-        return  # nothing to update
-
-    query = f"""
+    cursor.execute(
+        """
         UPDATE tblMedia
-        SET {",".join(fields)}
+        SET
+            Title = ?,
+            MediaType = ?,
+            ReleaseYear = ?,
+            Publisher = ?,
+            Quantity = ?,
+            Price = ?
         WHERE MediaID = ?
-    """
+        """,
+        (
+            media.title,
+            media.media_type.value,
+            media.release_year,
+            media.publisher,
+            media.quantity,
+            media.price,
+            media.id,
+        ),
+    )
 
-    cursor.execute(query, params + [media_id])
     conn.commit()
     conn.close()
+
+    return media
 
 
