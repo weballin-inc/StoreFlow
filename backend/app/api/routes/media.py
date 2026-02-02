@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Query, Path, Body, Depends
-from typing import Optional, List
+from typing import Optional, List, Literal
 
 from app.api.schemas.media import (
     MediaCreateSchema,
@@ -8,13 +8,13 @@ from app.api.schemas.media import (
     PagedMediaResponseSchema,
     MediaBatchResultSchema
 )
-
 from app.api.schemas.media_query import MediaListQuerySchema
+from app.api.schemas.common import IncrementSchema
 
 from app.services.media_services import (
     add_media_title,
-    get_media_by_id,
-    update_media_by_id
+    update_media_by_id,
+    patch_media_counter_by_id
 )
 from app.api.validators import (
     ranges,
@@ -25,6 +25,7 @@ from app.domain.exceptions import MediaAlreadyExistsError
 from app.domain.enums import MediaType
 from app.repositories.enums_repo import MediaSortField
 from app.repositories import media_repo
+
 
 
 router = APIRouter(prefix="/media", tags=["Media"])
@@ -69,7 +70,7 @@ def create_media(payload: List[MediaCreateSchema]):
                 MediaBatchResultSchema(
                     title=item.title,
                     status="FAIL",
-                    reason=f"{str(e)}"
+                    err_reason=f"{str(e)}"
                 )
             )
 
@@ -78,7 +79,7 @@ def create_media(payload: List[MediaCreateSchema]):
                 MediaBatchResultSchema(
                     title=item.title,
                     status="FAIL",
-                    reason=f"Internal Server Error: {str(e)}"
+                    err_reason=f"Internal Server Error: {str(e)}"
                 )
             )
             import traceback
@@ -134,4 +135,18 @@ def put_media(media_id: int, payload: MediaUpdateSchema):
         data=payload
     )
 
+    return media
+
+
+@router.patch("/{media_id}/{field}", status_code=status.HTTP_200_OK, response_model=MediaResponseSchema)
+def patch_media_counter(
+    media_id: int,
+    field: Literal["quantity", "price"],
+    payload: IncrementSchema
+):
+    media = patch_media_counter_by_id(
+        media_id=media_id,
+        field=field,
+        delta=payload.delta,
+    )
     return media

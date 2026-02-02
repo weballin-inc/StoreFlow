@@ -1,4 +1,5 @@
 """Business logic for tblMedia"""
+from typing import Literal
 
 from app.api.schemas.media import MediaCreateSchema, MediaUpdateSchema
 from app.domain.enums import MediaType
@@ -50,19 +51,6 @@ def add_media_title(data: MediaCreateSchema) -> Media:
     return media_repo.create(media)
 
 
-# ------- Get/Select Media -------
-def get_media_by_id(media_id: int):
-    """
-    Returns a specific media based on ID
-    """
-    media = media_repo.get_by_id(media_id)
-
-    if media is None:
-        raise MediaNotFoundError(f"Media with ID {media_id} not found")
-
-    return media
-
-
 # ------- Update Media -------
 def update_media_by_id(
     media_id: int,
@@ -98,3 +86,31 @@ def update_media_by_id(
     return media_repo.update(updated)
 
 
+def patch_media_counter_by_id(
+    media_id: int,
+    field: Literal["quantity", "price"],
+    delta: int,
+) -> Media:
+
+    media = media_repo.get_by_id(media_id)
+    if media is None:
+        raise MediaNotFoundError(f"Media with ID {media_id} not found")
+
+    if field == "quantity":
+        new_value = media.quantity + delta
+        if new_value < 0:
+            raise InvalidValueError("Quantity cannot be negative")
+
+        media.quantity = new_value
+
+    elif field == "price":
+        new_value = media.price + delta
+        if new_value < 0:
+            raise InvalidValueError("Price cannot be negative")
+
+        media.price = new_value
+
+    else:
+        raise InvalidKeyError("Invalid field")
+
+    return media_repo.update(media)

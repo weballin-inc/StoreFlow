@@ -93,7 +93,7 @@ def register_error_handlers(app: FastAPI) -> None:
         invalid_value_error
     )
 
-    app.add_exception_handler( # check if useful
+    app.add_exception_handler(
         InvalidKeyError,
         invalid_key_error
     )

@@ -39,7 +39,7 @@ class MediaBatchResultSchema(BaseModel):
     id: int | None = None
     title: str
     status: Literal["SUCCESS", "FAIL"]
-    reason: str | None = None
+    err_reason: str | None = None
 
 # ---------- Paged ----------
 
