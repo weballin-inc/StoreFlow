@@ -111,25 +111,7 @@ def list_media(query: MediaListQuerySchema = Depends()):
 
     # sorting.validate_sorting(query.sort_by, query.order)
 
-    items, total = media_repo.list_filtered(
-        media_id=query.media_id,
-        title=query.title,
-        media_type=query.media_type,
-        publisher=query.publisher,
-        quantity=query.quantity,
-        quantity_from=query.quantity_from,
-        quantity_to=query.quantity_to,
-        price=query.price,
-        price_from=query.price_from,
-        price_to=query.price_to,
-        release_year=query.release_year,
-        release_year_from=query.release_year_from,
-        release_year_to=query.release_year_to,
-        sort_by=query.sort_by.value if query.sort_by else None,
-        order=query.order,
-        limit=query.limit,
-        offset=query.offset,
-    )
+    items, total = media_repo.list_filtered(**query.__dict__)
 
     return {
         "items": items,
