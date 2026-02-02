@@ -1,0 +1,12 @@
+from fastapi import HTTPException
+
+def validate_sorting(sort_by, order: str):
+    # if sort_by is None and order is not None:
+    #     raise HTTPException(
+    #         422,
+    #         detail="order cannot be used without sort_by",
+    #     )
+
+    # if order not in ("asc", "desc"):
+    #     raise HTTPException(422, detail="order must be asc or desc")
+    pass

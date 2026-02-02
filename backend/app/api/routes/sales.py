@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Query, Path, HTTPException
 from typing import Optional
 
-from app.api.schemas import (
+from app.api.schemas.sales import (
     SaleCreateSchema,
     SaleResponseSchema,
     PagedSalesResponseSchema

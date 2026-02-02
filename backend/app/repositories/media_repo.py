@@ -9,71 +9,138 @@ from app.repositories.enums_repo import MediaSortField
 
 
 def list_filtered(
-    media_type: Optional[MediaType] = None,
-    publisher: Optional[str] = None,
-    release_year: Optional[int] = None,
-    release_year_from: Optional[int] = None,
-    release_year_to: Optional[int] = None,
-    sort_by: Optional[str] = None,
+    media_id: int | None = None,
+    title: str | None = None,
+    media_type: MediaType | None = None,
+    publisher: str | None = None,
+
+    quantity: int | None = None,
+    quantity_from: int | None = None,
+    quantity_to: int | None = None,
+
+    price: float | None = None,
+    price_from: float | None = None,
+    price_to: float | None = None,
+
+    release_year: int | None = None,
+    release_year_from: int | None = None,
+    release_year_to: int | None = None,
+
+    sort_by: str | None = None,
     order: str = "asc",
     limit: int = 20,
     offset: int = 0,
-) -> List[Media]:
+) -> tuple[list[Media], int]:
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    query = """
-        SELECT MediaID, Title, MediaType, ReleaseYear, Publisher
+    base_query = """
         FROM tblMedia
         WHERE 1 = 1
     """
-    params = []
+
+    params: list = []
+
+    # ---------- exact filters ----------
+    if media_id is not None:
+        base_query += " AND MediaID = ?"
+        params.append(media_id)
+
+    if title is not None:
+        base_query += " AND Title LIKE ?"
+        params.append(f"%{title}%")
 
     if media_type is not None:
-        query += " AND MediaType = ?"
+        base_query += " AND MediaType = ?"
         params.append(media_type.value)
 
     if publisher is not None:
-        query += " AND Publisher = ?"
-        params.append(publisher)
+        base_query += " AND Publisher LIKE ?"
+        params.append(f"%{publisher}%")
+
+    if quantity is not None:
+        base_query += " AND Quantity = ?"
+        params.append(quantity)
+
+    if price is not None:
+        base_query += " AND Price = ?"
+        params.append(price)
+
+    if release_year is not None:
+        base_query += " AND ReleaseYear = ?"
+        params.append(release_year)
+
+    # ---------- range filters ----------
+    if quantity_from is not None:
+        base_query += " AND Quantity >= ?"
+        params.append(quantity_from)
+
+    if quantity_to is not None:
+        base_query += " AND Quantity <= ?"
+        params.append(quantity_to)
+
+    if price_from is not None:
+        base_query += " AND Price >= ?"
+        params.append(price_from)
+
+    if price_to is not None:
+        base_query += " AND Price <= ?"
+        params.append(price_to)
 
     if release_year_from is not None:
-        query += " AND ReleaseYear >= ?"
+        base_query += " AND ReleaseYear >= ?"
         params.append(release_year_from)
 
     if release_year_to is not None:
-        query += " AND ReleaseYear <= ?"
+        base_query += " AND ReleaseYear <= ?"
         params.append(release_year_to)
 
-    if release_year is not None:
-        query += " AND ReleaseYear = ?"
-        params.append(release_year)
+    # ---------- total count ----------
+    count_query = "SELECT COUNT(*) " + base_query
+    cursor.execute(count_query, params)
+    total = cursor.fetchone()[0]
 
+    # ---------- sorting ----------
     if sort_by is not None:
-        try:
-            column = MediaSortField(sort_by).value
-            query += f" ORDER BY {column} {order.upper()}"
-        except ValueError:
-            pass
+        column = MediaSortField(sort_by).value
+        base_query += f" ORDER BY {column} {order.upper()}"
 
-    query += " LIMIT ? OFFSET ?"
+    # ---------- pagination ----------
+    base_query += " LIMIT ? OFFSET ?"
     params.extend([limit, offset])
 
-    cursor.execute(query, params)
-    rows = cursor.fetchall()
-    total = len(rows)
+    # ---------- final query ----------
+    final_query = """
+        SELECT
+            MediaID,
+            Title,
+            MediaType,
+            ReleaseYear,
+            Publisher,
+            Quantity,
+            Price
+    """ + base_query
 
-    return [
-        Media(
-            id=row[0],
-            title=row[1],
-            media_type=MediaType(row[2]),
-            release_year=row[3],
-            publisher=row[4],
-        )
-        for row in rows
-    ], total
+    cursor.execute(final_query, params)
+    rows = cursor.fetchall()
+    conn.close()
+
+    return (
+        [
+            Media(
+                id=row[0],
+                title=row[1],
+                media_type=MediaType(row[2]),
+                release_year=row[3],
+                publisher=row[4],
+                quantity=row[5],
+                price=row[6],
+            )
+            for row in rows
+        ],
+        total,
+    )
 
 
 # Used to query if inserting a potential duplicate

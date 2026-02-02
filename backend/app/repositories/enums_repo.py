@@ -1,6 +1,7 @@
 from enum import Enum
 
 class MediaSortField(str, Enum):
+    id = "MediaID"
     title = "Title"
     media_type = "MediaType"
     release_year = "ReleaseYear"
