@@ -1,5 +1,5 @@
-from fastapi import APIRouter, status, Query, Path, Body, Depends
-from typing import Optional, List, Literal
+from fastapi import APIRouter, status, Depends
+from typing import List, Literal
 
 from app.api.schemas.media import (
     MediaCreateSchema,
@@ -23,9 +23,6 @@ from app.api.validators import (
     # sorting
 )
 from app.domain.exceptions import MediaAlreadyExistsError
-from app.domain.enums import MediaType
-from app.repositories.enums_repo import MediaSortField
-from app.repositories import media_repo
 
 
 

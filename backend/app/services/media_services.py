@@ -3,7 +3,6 @@ from typing import Literal
 
 from app.api.schemas.media import MediaCreateSchema, MediaUpdateSchema
 from app.api.schemas.media_query import MediaListQuerySchema
-from app.domain.enums import MediaType
 from app.domain.exceptions import (
     InvalidKeyError,
     InvalidValueError,
@@ -61,15 +60,19 @@ def list_media(query: MediaListQuerySchema) -> tuple[list[Media], int]:
         title=query.title,
         media_type=query.media_type,
         publisher=query.publisher,
+
         quantity=query.quantity,
         quantity_from=query.quantity_from,
         quantity_to=query.quantity_to,
+
         price=query.price,
         price_from=query.price_from,
         price_to=query.price_to,
+
         release_year=query.release_year,
         release_year_from=query.release_year_from,
         release_year_to=query.release_year_to,
+
         sort_by=query.sort_by.value if query.sort_by else None,
         order=query.order,
         limit=query.limit,
