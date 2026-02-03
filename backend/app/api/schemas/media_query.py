@@ -1,8 +1,9 @@
 from typing import Optional
-from fastapi import Query
+from fastapi import Query, Depends
 
 from app.domain.enums import MediaType
 from app.repositories.enums_repo import MediaSortField
+from app.api.schemas.common import CommonListQuerySchema
 
 
 class MediaListQuerySchema:
@@ -12,7 +13,7 @@ class MediaListQuerySchema:
         media_id: Optional[int] = Query(
             None,
             ge=1,
-            alias=MediaSortField.id,
+            alias=MediaSortField.id.value,
             description="`ID of the tblMedia item`",
             examples=[67],
         ),
@@ -42,7 +43,7 @@ class MediaListQuerySchema:
         quantity: Optional[int] = Query(
             None,
             ge=0,
-            alias=MediaSortField.quantity,
+            alias=MediaSortField.quantity.value,
             description="`Exact quantity of copies`",
         ),
 
@@ -64,7 +65,7 @@ class MediaListQuerySchema:
         price: Optional[float] = Query(
             None,
             ge=0,
-            alias=MediaSortField.price,
+            alias=MediaSortField.price.value,
             description="`Exact item price`",
         ),
 
@@ -86,7 +87,7 @@ class MediaListQuerySchema:
         release_year: Optional[int] = Query(
             None,
             ge=0,
-            alias=MediaSortField.release_year,
+            alias=MediaSortField.release_year.value,
             description="`Release year of the item`",
         ),
 
@@ -112,27 +113,7 @@ class MediaListQuerySchema:
             examples=["publisher"],
         ),
 
-        order: str = Query(
-            "asc",
-            alias="Order",
-            pattern="^(asc|desc)$",
-            description="`Sort order: ascending or descending`",
-        ),
-
-        limit: int = Query(
-            20,
-            ge=1,
-            le=100,
-            alias="Limit",
-            description="`Maximum number of rows`",
-        ),
-
-        offset: int = Query(
-            0,
-            ge=0,
-            alias="Offset",
-            description="`Starting row offset`",
-        )
+        common: CommonListQuerySchema = Depends()
     ):
         self.media_id = media_id
         self.title = title
@@ -152,6 +133,6 @@ class MediaListQuerySchema:
         self.release_year_to = release_year_to
 
         self.sort_by = sort_by
-        self.order = order
-        self.limit = limit
-        self.offset = offset
+        self.order = common.order
+        self.limit = common.limit
+        self.offset = common.offset

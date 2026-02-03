@@ -30,6 +30,7 @@
     <Compile Include="backend\app\api\schemas\media.py" />
     <Compile Include="backend\app\api\schemas\media_query.py" />
     <Compile Include="backend\app\api\schemas\sales.py" />
+    <Compile Include="backend\app\api\schemas\sales_query.py" />
     <Compile Include="backend\app\api\validators\pagination.py" />
     <Compile Include="backend\app\api\validators\ranges.py" />
     <Compile Include="backend\app\api\validators\sorting.py.old" />

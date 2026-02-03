@@ -25,3 +25,8 @@ def create_sale(media_id: int, payload: SaleCreateSchema):
         "date": sale.date,
         "amount_sold": payload.amount_sold,
     }
+
+
+# @router.get("", status_code=status.HTTP_200_OK, response_model=SaleResponseSchema)
+# def list_sales(query: SalesListQuerySchema = Depends()):
+#     pass
