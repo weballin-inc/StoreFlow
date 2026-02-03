@@ -13,6 +13,7 @@ from app.api.schemas.common import IncrementSchema
 
 from app.services.media_services import (
     add_media_title,
+    list_media,
     update_media_by_id,
     patch_media_counter_by_id
 )
@@ -89,7 +90,7 @@ def create_media(payload: List[MediaCreateSchema]):
 
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=PagedMediaResponseSchema)
-def list_media(query: MediaListQuerySchema = Depends()):
+def get_media(query: MediaListQuerySchema = Depends()):
     """
     Lists all tblMedia records.
     Can be filtered by all columns.
@@ -105,7 +106,7 @@ def list_media(query: MediaListQuerySchema = Depends()):
 
     # sorting.validate_sorting(query.sort_by, query.order)
 
-    items, total = media_repo.list_filtered(**query.__dict__)
+    items, total = list_media(query)
 
     return {
         "items": items,
