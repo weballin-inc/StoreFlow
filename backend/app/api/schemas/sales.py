@@ -9,7 +9,7 @@ class SaleCreateSchema(BaseModel):
 
 # ---------- Response ----------
 
-class SaleResponseSchema(SaleCreateSchema):
+class SaleResponseSchema(BaseModel):
     id: int
     media_id: int
     price: float
@@ -17,8 +17,8 @@ class SaleResponseSchema(SaleCreateSchema):
 
 # ---------- Paged ----------
 
-class PagedSalesResponseSchema(BaseModel):
-    items: List[Dict]
+class PagedSaleResponseSchema(BaseModel):
+    items: List[SaleResponseSchema]
     total: int
     limit: int
     offset: int

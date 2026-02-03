@@ -85,9 +85,9 @@ class SalesListQuerySchema:
         self.price_from = price_from
         self.price_to = price_to
 
-        self.release_year = date
-        self.release_year_from = date_from
-        self.release_year_to = date_to
+        self.date = date
+        self.date_from = date_from
+        self.date_to = date_to
 
         self.sort_by = sort_by
         self.order = common.order
