@@ -19,7 +19,7 @@ class Media:
 @dataclass
 class Sale:
     id: Optional[int]
-    copy_id: int
+    media_id: int
     price: float
     date: datetime
 

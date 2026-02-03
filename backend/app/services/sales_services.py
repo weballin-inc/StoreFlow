@@ -1,41 +1,24 @@
 """Business logic for tblSales"""
 
-from app.core.database import get_connection
 from app.domain.models import Sale
-from app.repositories import sales_repo
+from app.api.schemas.sales import SaleCreateSchema
+from app.repositories import media_repo, sales_repo
+from app.domain.exceptions import (
+    MediaNotFoundError,
+    MediaAlreadySoldOut,
+    InvalidValueError
+)
 
-############################################
-#   tblSales
-############################################
-# def sell_copy(copy_id: int) -> Sale:
-#     conn = get_connection()
+def add_sale(media_id: int, amount_sold: int) -> Sale:
+    if amount_sold <= 0:
+        raise InvalidValueError(f"Amount to sell must be >0. You've given {amount_sold}")
 
-#     try:
-#         conn.execute("BEGIN")
+    media = media_repo.get_by_id(media_id)
+    if media is None:
+        raise MediaNotFoundError(f"Media with ID {media_id} not found")
 
-#         copy = copies_repo.get_by_id(copy_id)
-#         if copy is None:
-#             raise CopyNotFoundError(f"Copy with ID {copy_id} not found")
+    success = media_repo.decrement_media_amount(media_id, amount_sold)
+    if not success:
+        raise MediaAlreadySoldOut(f"Not enough items in stock to sell {amount_sold}")
 
-#         if copy.status == CopyStatus.SOLD:
-#             raise CopyAlreadySoldError(f"Copy with ID {copy_id} already sold")
-
-#         sale = Sale(
-#             id=copy.id,
-#             copy_id=copy_id,
-#             price=copy.price,
-#         )
-
-#         created_sale = sales_repo.create_with_conn(conn, sale)
-
-#         copies_repo.update_status_with_conn(conn, sale.id, CopyStatus.SOLD)
-
-#         conn.commit()
-#         return created_sale
-
-#     except:
-#         conn.rollback()
-#         raise
-
-#     finally:
-#         conn.close()
+    return sales_repo.insert_sale(media_id, media.price)

@@ -280,3 +280,20 @@ def update(media: Media) -> Media:
     return media
 
 
+def decrement_media_amount(media_id: int, amount_sold: int) -> bool:
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor = conn.execute(
+        """
+        UPDATE tblMedia
+        SET Quantity = Quantity - ?
+        WHERE MediaID = ?
+            AND Quantity >= ?
+        """,
+        (amount_sold, media_id, amount_sold)
+    )
+    conn.commit()
+    conn.close()
+
+    return cursor.rowcount == 1

@@ -12,8 +12,6 @@ class MediaSortField(str, Enum):
 
 class SalesSortField(str, Enum):
     sale_id = "s.SaleID"
-    sale_price = "s.Price"
-    copy_id = "c.CopyID"
     media_id = "m.MediaID"
-    title = "m.Title"
-    release_year = "m.ReleaseYear"
+    sale_price = "s.Price"
+    sale_date = "s.Date"

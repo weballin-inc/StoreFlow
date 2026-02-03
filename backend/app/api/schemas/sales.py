@@ -5,12 +5,13 @@ from datetime import datetime
 # ---------- Create ----------
 
 class SaleCreateSchema(BaseModel):
-    media_id: int = Field(..., ge=1)
+    amount_sold: int = Field(gt=0)
 
 # ---------- Response ----------
 
 class SaleResponseSchema(SaleCreateSchema):
     id: int
+    media_id: int
     price: float
     date: datetime
 
