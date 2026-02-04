@@ -14,11 +14,22 @@ header {
   height: 15%;
 }
 
-nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.table_toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
+
+.table_toolbar_L {
+    display: flex;
+    gap: 10px;
+}
+
+.table_toolbar_R {
+    display: flex;
+}
+
 
 main {
 	height: 65%;

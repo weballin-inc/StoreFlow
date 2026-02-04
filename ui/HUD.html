@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Ôªø<!DOCTYPE html>
 <html lang="pl">
 <head>
 <meta charset="UTF-8-sig">
@@ -8,70 +8,171 @@
 <body>
 	<header>
 		<h1>StoreFlow</h1>
-	<nav>
-		<button id="refresh">Refresh</button>
-		<input placeholder="Search Item"></input>
-	</nav>
 	</header>
-    <main>
-        <table id="items" border="1" cellpadding="5">
-            <thead>
-                <tr>
-                    <th>Tytu≥</th>
-                    <th>Typ</th>
-                    <th>Rok</th>
-                    <th>Wydawca</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+<main>
+    <div class="table_toolbar">
+        <div class="table_toolbar_L">
+            <button id="items_button">Items</button>
+            <button id="sales_button">Sales</button>
+        </div>
+        <div class="table_toolbar_R">
+            <input placeholder="Search Item">
+        </div>
+    </div>
+    <table id="items" border="1" cellpadding="5">
+        <thead id="table_head"></thead>
+        <tbody></tbody>
+    </table>
 </main>
-
-	<footer>
-		<button>Confirm</button>
-	</footer>
+<footer>
+    <button id="footer">Confirm</button>
+</footer>
 
 <script>
-document.getElementById("refresh").addEventListener("click", () => {
-    const tbody = document.querySelector("#items tbody");
+/* ------------------ ELEMENTY DOM ------------------ */
+const tableHead = document.getElementById("table_head");
+const tbody = document.querySelector("#items tbody");
+const footer = document.getElementById("footer");
 
-    // wyczyúÊ stare wiersze
+const itemsBtn = document.getElementById("items_button");
+const salesBtn = document.getElementById("sales_button");
+
+/* ------------------ STAN APLIKACJI ------------------ */
+let currentView = "items";
+let typeFilter = "ALL";        // ALL | GAME | BOOK
+let dateSortOrder = "desc";    // asc | desc
+let mediaTitleMap = {};        // media.id -> title
+
+/* ------------------ NAG≈Å√ìWKI ------------------ */
+function renderItemsHeader() {
+    tableHead.innerHTML = `
+        <tr>
+            <th>Tytu≈Ç</th>
+            <th>
+                Typ
+                <select id="typeFilter">
+                    <option value="ALL">ALL</option>
+                    <option value="GAME">GAME</option>
+                    <option value="BOOK">BOOK</option>
+                </select>
+            </th>
+            <th>Rok</th>
+            <th>Wydawca</th>
+            <th>Ilo≈õƒá</th>
+            <th>Cena</th>
+            <th>Edytuj</th>
+        </tr>
+    `;
+
+    const select = document.getElementById("typeFilter");
+    select.value = typeFilter;
+
+    select.onchange = e => {
+        typeFilter = e.target.value;
+        loadTable("items");
+    };
+}
+
+function renderSalesHeader() {
+    tableHead.innerHTML = `
+        <tr>
+            <th>Tytu≈Ç</th>
+            <th>Cena</th>
+            <th id="dateSort" style="cursor:pointer">
+                Data sprzedania ${dateSortOrder === "asc" ? "‚ñ≤" : "‚ñº"}
+            </th>
+        </tr>
+    `;
+
+    document.getElementById("dateSort").onclick = () => {
+        dateSortOrder = dateSortOrder === "asc" ? "desc" : "asc";
+        loadTable("sales");
+    };
+}
+
+/* ------------------ G≈Å√ìWNA FUNKCJA ------------------ */
+async function loadTable(type) {
+    currentView = type;
     tbody.innerHTML = "";
 
-    fetch("http://127.0.0.1:8000/media?order=asc&limit=20&offset=0", {
-        method: "GET",
-        headers: {
-            "accept": "application/json"
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("B≥πd HTTP: " + response.status);
-        }
-        return response.json();
-    })
-    .then(data => {
-        data.items.forEach(item => {
-            const tr = document.createElement("tr");
+    footer.style.display = type === "sales" ? "flex" : "none";
 
-            tr.innerHTML = `
-                <td>${item.title}</td>
-                <td>${item.media_type}</td>
-                <td>${item.release_year}</td>
-                <td>${item.publisher}</td>
-            `;
+    /* ---------- ITEMS ---------- */
+    if (type === "items") {
+        renderItemsHeader();
 
-            tbody.appendChild(tr);
+        const res = await fetch("http://127.0.0.1:8000/media?Order=asc&Limit=20&Offset=0");
+        const data = await res.json();
+
+        mediaTitleMap = {};
+        let rows = data.items;
+
+        // mapa media.id -> title
+        rows.forEach(item => {
+            mediaTitleMap[item.id] = item.title;
         });
-    })
-    .catch(error => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td colspan="5">B≥πd: ${error.message}</td>`;
-        tbody.appendChild(tr);
-    });
+
+        // filtr typu
+        if (typeFilter !== "ALL") {
+            rows = rows.filter(item => item.media_type === typeFilter);
+        }
+
+        rows.forEach(item => {
+            tbody.insertAdjacentHTML("beforeend", `
+                <tr>
+                    <td>${item.title}</td>
+                    <td>${item.media_type}</td>
+                    <td>${item.release_year}</td>
+                    <td>${item.publisher}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td width= 1 rem;><button id="update">Update</button></td>
+                </tr>
+            `);
+        });
+    }
+
+    /* ---------- SALES ---------- */
+    if (type === "sales") {
+        renderSalesHeader();
+
+        const res = await fetch("http://127.0.0.1:8000/sales?Order=asc&Limit=20&Offset=0");
+        const data = await res.json();
+
+        let rows = data.items.map(sale => ({
+            ...sale,
+            title: mediaTitleMap[sale.media_id] ?? "(nieznany tytu≈Ç)"
+        }));
+
+        // sort po dacie
+        rows.sort((a, b) => {
+            const A = new Date(a.date);
+            const B = new Date(b.date);
+            return dateSortOrder === "asc" ? A - B : B - A;
+        });
+
+        rows.forEach(sale => {
+            tbody.insertAdjacentHTML("beforeend", `
+                <tr>
+                    <td>${sale.title}</td>
+                    <td>${sale.price}</td>
+                    <td>${new Date(sale.date).toLocaleString()}</td>
+                </tr>
+            `);
+        });
+    }
+}
+
+/* ------------------ PRZYCISKI ------------------ */
+itemsBtn.onclick = () => loadTable("items");
+salesBtn.onclick = () => loadTable("sales");
+
+/* ------------------ START STRONY ------------------ */
+document.addEventListener("DOMContentLoaded", () => {
+    loadTable("items");
 });
 </script>
+
 
 </body>
 </html>
