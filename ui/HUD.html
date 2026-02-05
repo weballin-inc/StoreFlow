@@ -6,9 +6,11 @@
 <title>StoreFlow</title>
 </head>
 <body>
-	<header>
-		<h1>StoreFlow</h1>
-	</header>
+
+<header>
+    <h1>StoreFlow</h1>
+</header>
+
 <main>
     <div class="table_toolbar">
         <div class="table_toolbar_L">
@@ -16,14 +18,16 @@
             <button id="sales_button">Sales</button>
         </div>
         <div class="table_toolbar_R">
-            <input placeholder="Search Item">
+            <input id="searchInput" placeholder="Podaj nazwę">
         </div>
     </div>
+
     <table id="items" border="1" cellpadding="5">
         <thead id="table_head"></thead>
         <tbody></tbody>
     </table>
 </main>
+
 <footer>
     <button id="footer">Confirm</button>
 </footer>
@@ -36,12 +40,32 @@ const footer = document.getElementById("footer");
 
 const itemsBtn = document.getElementById("items_button");
 const salesBtn = document.getElementById("sales_button");
+const searchInput = document.getElementById("searchInput");
 
-/* ------------------ STAN APLIKACJI ------------------ */
+/* ------------------ STAN ------------------ */
 let currentView = "items";
-let typeFilter = "ALL";        // ALL | GAME | BOOK
-let dateSortOrder = "desc";    // asc | desc
-let mediaTitleMap = {};        // media.id -> title
+let typeFilter = "ALL";
+let dateSortOrder = "desc";
+let mediaTitleMap = {};
+
+let allItems = [];
+let allSales = [];
+let searchQuery = "";
+
+/* ------------------ PLACEHOLDER ------------------ */
+function updateSearchPlaceholder() {
+    if (currentView === "items") {
+        searchInput.placeholder = "Podaj nazwę";
+    } else {
+        searchInput.placeholder = "Podaj datę (np. 2024-01)";
+    }
+}
+
+/* ------------------ WYSZUKIWANIE LIVE ------------------ */
+searchInput.addEventListener("input", e => {
+    searchQuery = e.target.value.toLowerCase();
+    renderFilteredTable();
+});
 
 /* ------------------ NAGŁÓWKI ------------------ */
 function renderItemsHeader() {
@@ -69,7 +93,7 @@ function renderItemsHeader() {
 
     select.onchange = e => {
         typeFilter = e.target.value;
-        loadTable("items");
+        renderFilteredTable();
     };
 }
 
@@ -86,35 +110,25 @@ function renderSalesHeader() {
 
     document.getElementById("dateSort").onclick = () => {
         dateSortOrder = dateSortOrder === "asc" ? "desc" : "asc";
-        loadTable("sales");
+        renderFilteredTable();
     };
 }
 
-/* ------------------ GŁÓWNA FUNKCJA ------------------ */
-async function loadTable(type) {
-    currentView = type;
+/* ------------------ RENDER Z FILTREM ------------------ */
+function renderFilteredTable() {
     tbody.innerHTML = "";
 
-    footer.style.display = type === "sales" ? "flex" : "none";
+    if (currentView === "items") {
+        let rows = allItems;
 
-    /* ---------- ITEMS ---------- */
-    if (type === "items") {
-        renderItemsHeader();
-
-        const res = await fetch("http://127.0.0.1:8000/media?Order=asc&Limit=20&Offset=0");
-        const data = await res.json();
-
-        mediaTitleMap = {};
-        let rows = data.items;
-
-        // mapa media.id -> title
-        rows.forEach(item => {
-            mediaTitleMap[item.id] = item.title;
-        });
-
-        // filtr typu
         if (typeFilter !== "ALL") {
             rows = rows.filter(item => item.media_type === typeFilter);
+        }
+
+        if (searchQuery) {
+            rows = rows.filter(item =>
+                item.title.toLowerCase().includes(searchQuery)
+            );
         }
 
         rows.forEach(item => {
@@ -126,25 +140,21 @@ async function loadTable(type) {
                     <td>${item.publisher}</td>
                     <td>${item.quantity}</td>
                     <td>${item.price}</td>
-                    <td width= 1 rem;><button id="update">Update</button></td>
+                    <td><button>Update</button></td>
                 </tr>
             `);
         });
     }
 
-    /* ---------- SALES ---------- */
-    if (type === "sales") {
-        renderSalesHeader();
+    if (currentView === "sales") {
+        let rows = allSales;
 
-        const res = await fetch("http://127.0.0.1:8000/sales?Order=asc&Limit=20&Offset=0");
-        const data = await res.json();
+        if (searchQuery) {
+            rows = rows.filter(sale =>
+                sale.date.toLowerCase().includes(searchQuery)
+            );
+        }
 
-        let rows = data.items.map(sale => ({
-            ...sale,
-            title: mediaTitleMap[sale.media_id] ?? "(nieznany tytuł)"
-        }));
-
-        // sort po dacie
         rows.sort((a, b) => {
             const A = new Date(a.date);
             const B = new Date(b.date);
@@ -163,16 +173,56 @@ async function loadTable(type) {
     }
 }
 
+/* ------------------ LOAD TABLE ------------------ */
+async function loadTable(type) {
+    currentView = type;
+    tbody.innerHTML = "";
+    searchInput.value = "";
+    searchQuery = "";
+
+    updateSearchPlaceholder();
+
+    footer.style.display = type === "sales" ? "flex" : "none";
+
+    if (type === "items") {
+        renderItemsHeader();
+
+        const res = await fetch("http://127.0.0.1:8000/media?Order=asc&Limit=100&Offset=0");
+        const data = await res.json();
+
+        allItems = data.items;
+        mediaTitleMap = {};
+
+        allItems.forEach(item => {
+            mediaTitleMap[item.id] = item.title;
+        });
+
+        renderFilteredTable();
+    }
+
+    if (type === "sales") {
+        renderSalesHeader();
+
+        const res = await fetch("http://127.0.0.1:8000/sales?Order=asc&Limit=100&Offset=0");
+        const data = await res.json();
+
+        allSales = data.items.map(sale => ({
+            ...sale,
+            title: mediaTitleMap[sale.media_id] ?? "(nieznany tytuł)"
+        }));
+
+        renderFilteredTable();
+    }
+}
+
 /* ------------------ PRZYCISKI ------------------ */
 itemsBtn.onclick = () => loadTable("items");
 salesBtn.onclick = () => loadTable("sales");
 
-/* ------------------ START STRONY ------------------ */
+/* ------------------ START ------------------ */
 document.addEventListener("DOMContentLoaded", () => {
     loadTable("items");
 });
 </script>
-
-
 </body>
 </html>
