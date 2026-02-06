@@ -1,3 +1,5 @@
+"""MediaType enums for validating `media_type` input"""
+
 from enum import Enum
 
 class MediaType(str, Enum):

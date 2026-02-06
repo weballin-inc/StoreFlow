@@ -1,3 +1,5 @@
+"""Schemas for commonly used variables, such as sorting, paging or metapaging"""
+
 from fastapi import Query
 from pydantic import BaseModel, Field
 from typing import Literal, Optional

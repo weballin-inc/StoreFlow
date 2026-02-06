@@ -1,3 +1,5 @@
+"""Definition of validators related to pagination of the select query results"""
+
 from fastapi import HTTPException
 
 def validate_pagination(limit: int, offset: int):

@@ -1,3 +1,5 @@
+"""Models for tblMedia and tblSale columns. Used for structured manipulation of the database."""
+
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional

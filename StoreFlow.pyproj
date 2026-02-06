@@ -25,7 +25,6 @@
     <Compile Include="backend\app\api\error_handlers.py" />
     <Compile Include="backend\app\api\routes\media.py" />
     <Compile Include="backend\app\api\routes\sales.py" />
-    <Compile Include="backend\app\api\schemas.py.old" />
     <Compile Include="backend\app\api\schemas\common.py" />
     <Compile Include="backend\app\api\schemas\media.py" />
     <Compile Include="backend\app\api\schemas\media_query.py" />
@@ -33,9 +32,7 @@
     <Compile Include="backend\app\api\schemas\sales_query.py" />
     <Compile Include="backend\app\api\validators\pagination.py" />
     <Compile Include="backend\app\api\validators\ranges.py" />
-    <Compile Include="backend\app\api\validators\sorting.py.old" />
     <Compile Include="backend\app\api\validators\__init__.py" />
-    <Compile Include="backend\app\core\config.py" />
     <Compile Include="backend\app\core\database.py" />
     <Compile Include="backend\app\core\init_db.py" />
     <Compile Include="backend\app\domain\enums.py" />
@@ -48,7 +45,6 @@
     <Compile Include="backend\app\repositories\__init__.py" />
     <Compile Include="backend\app\services\media_services.py" />
     <Compile Include="backend\app\services\sales_services.py" />
-    <Compile Include="backend\app\services\services.py.old" />
     <Compile Include="StoreFlow_app.py" />
   </ItemGroup>
   <ItemGroup>

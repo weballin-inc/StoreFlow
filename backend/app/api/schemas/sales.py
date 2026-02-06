@@ -1,3 +1,5 @@
+"""Schemas used for requests/responses for `/sales` endpoint"""
+
 from pydantic import BaseModel, Field
 from typing import List
 from datetime import datetime

@@ -1,4 +1,7 @@
+"""Sorting enums used for filtered table searches. Basically a map for all `variable`-`table_column`"""
+
 from enum import Enum
+
 
 class MediaSortField(str, Enum):
     id = "MediaID"

@@ -1,4 +1,4 @@
-"""Database engine"""
+"""Database engine. Path and `get_connection()` definition."""
 
 import sqlite3
 from pathlib import Path

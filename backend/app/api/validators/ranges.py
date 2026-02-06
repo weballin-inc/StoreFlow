@@ -1,3 +1,5 @@
+"""Definition of the ranges related to the search query results."""
+
 from fastapi import HTTPException
 
 def validate_range(
