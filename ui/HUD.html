@@ -1,16 +1,15 @@
 ﻿<!DOCTYPE html>
 <html lang="pl">
-<head>
-<meta charset="UTF-8-sig">
-<link rel="stylesheet" href="style.css">
-<title>StoreFlow</title>
-</head>
+    <head>
+        <meta charset="UTF-8-sig">
+        <link rel="stylesheet" href="style.css">
+        <title>StoreFlow</title>
+    </head>
 <body>
 
 <header>
     <h1>StoreFlow</h1>
 </header>
-
 
 <main>
     <div class="table_toolbar">
@@ -20,7 +19,7 @@
             <button id="add_button">Add Item</button>
         </div>
         <div class="table_toolbar_R">
-            <input id="searchInput" placeholder="Podaj nazwę">
+            <input id="searchInput" placeholder="Search">
         </div>
     </div>
 
@@ -34,29 +33,29 @@
     <button id="closePanel">✖</button>
 
     <h2 id="p_title"></h2>
-    <p><strong>Typ:</strong> <span id="p_type"></span></p>
-    <p><strong>Rok:</strong> <span id="p_year"></span></p>
-    <p><strong>Wydawca:</strong> <span id="p_publisher"></span></p>
-    <p><strong>Dostępne:</strong> <span id="p_quantity"></span></p>
-    <p><strong>Cena:</strong> <span id="p_price"></span></p>
+    <p><strong>Type:</strong> <span id="p_type"></span></p>
+    <p><strong>Year:</strong> <span id="p_year"></span></p>
+    <p><strong>Publisher:</strong> <span id="p_publisher"></span></p>
+    <p><strong>Available quantity:</strong> <span id="p_quantity"></span></p>
+    <p><strong>Price:</strong> <span id="p_price"></span></p>
 
     <label>
-        Ilość:
+        Quantity to sell:
         <input id="sellAmount" type="number" min="1" value="1">
     </label>
 
-    <button id="sendSale">Wyślij sprzedaż</button>
+    <button id="sendSale">Create sale</button>
 </div>
 
-<footer>
+<!--<footer>
     <button id="footer">Confirm</button>
-</footer>
+</footer>-->
 
 <script>
 /* ------------------ ELEMENTY DOM ------------------ */
 const tableHead = document.getElementById("table_head");
 const tbody = document.querySelector("#items tbody");
-const footer = document.getElementById("footer");
+//const footer = document.getElementById("footer");
 
 const itemsBtn = document.getElementById("items_button");
 const salesBtn = document.getElementById("sales_button");
@@ -88,13 +87,13 @@ let searchQuery = "";
 let selectedItemId = null;
 
 /* ------------------ PLACEHOLDER ------------------ */
-function updateSearchPlaceholder() {
-    if (currentView === "items") {
-        searchInput.placeholder = "Podaj nazwę";
-    } else {
-        searchInput.placeholder = "Podaj datę (np. 2024-01)";
-    }
-}
+//function updateSearchPlaceholder() {
+//    if (currentView === "items") {
+//        searchInput.placeholder = "Search";
+//    } else {
+//        searchInput.placeholder = "Search";
+//    }
+//}
 
 /* ------------------ WYSZUKIWANIE LIVE ------------------ */
 searchInput.addEventListener("input", e => {
@@ -106,20 +105,20 @@ searchInput.addEventListener("input", e => {
 function renderItemsHeader() {
     tableHead.innerHTML = `
         <tr>
-            <th>Tytuł</th>
+            <th>Title</th>
             <th>
-                Typ
+                Type
                 <select id="typeFilter">
                     <option value="ALL">ALL</option>
                     <option value="GAME">GAME</option>
                     <option value="BOOK">BOOK</option>
                 </select>
             </th>
-            <th>Rok</th>
-            <th>Wydawca</th>
-            <th>Ilość</th>
-            <th>Cena</th>
-            <th>Edytuj</th>
+            <th>Release Year</th>
+            <th>Publisher</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Edit record</th>
         </tr>
     `;
 
@@ -135,10 +134,10 @@ function renderItemsHeader() {
 function renderSalesHeader() {
     tableHead.innerHTML = `
         <tr>
-            <th>Tytuł</th>
-            <th>Cena</th>
+            <th>Title</th>
+            <th>Price</th>
             <th id="dateSort" style="cursor:pointer">
-                Data sprzedania ${dateSortOrder === "asc" ? "▲" : "▼"}
+                Date ${dateSortOrder === "asc" ? "▲" : "▼"}
             </th>
         </tr>
     `;
@@ -208,7 +207,14 @@ function renderFilteredTable() {
                 <tr>
                     <td>${sale.title}</td>
                     <td>${sale.price}</td>
-                    <td>${new Date(sale.date).toLocaleString()}</td>
+                    <td>${new Date(sale.date).toLocaleString("sv-SE", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false
+                    }) }</td>
                 </tr>
             `);
         });
@@ -264,9 +270,9 @@ async function loadTable(type) {
     searchInput.value = "";
     searchQuery = "";
 
-    updateSearchPlaceholder();
+    //updateSearchPlaceholder();
 
-    footer.style.display = type === "sales" ? "flex" : "none";
+    //footer.style.display = type === "sales" ? "flex" : "none";
 
     if (type === "items") {
         renderItemsHeader();
