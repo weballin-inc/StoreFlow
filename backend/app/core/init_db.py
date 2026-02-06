@@ -1,4 +1,4 @@
-"""Initialize database if it does not exist"""
+"""Initialize database if it does not exist. Create tables if they don't exist."""
 
 from app.core.database import get_connection
 

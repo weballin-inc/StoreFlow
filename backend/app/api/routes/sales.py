@@ -1,3 +1,5 @@
+"""Definition of all `/sales` endpoint methods"""
+
 from fastapi import APIRouter, status, Depends
 
 from app.services.sales_services import add_sale, list_sales
@@ -7,14 +9,13 @@ from app.api.schemas.sales import (
     PagedSaleResponseSchema
 )
 from app.api.schemas.sales_query import SalesListQuerySchema
-from app.api.validators import (
-    ranges,
-    pagination
-)
+from app.api.validators import ranges, pagination
 
 
+# Define /sales endpoint
 router = APIRouter(prefix="/sales", tags=["Sales"])
 
+# POST method
 @router.post("/{media_id}", status_code=status.HTTP_201_CREATED, response_model=SaleResponseSchema)
 def create_sale(media_id: int, payload: SaleCreateSchema):
 
@@ -28,7 +29,7 @@ def create_sale(media_id: int, payload: SaleCreateSchema):
         "amount_sold": payload.amount_sold,
     }
 
-
+# GET method
 @router.get("", status_code=status.HTTP_200_OK, response_model=PagedSaleResponseSchema)
 def get_sales(query: SalesListQuerySchema = Depends()):
     """

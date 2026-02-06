@@ -1,3 +1,5 @@
+"""Definition of all `/media` endpoint methods"""
+
 from fastapi import APIRouter, status, Depends
 from typing import List, Literal
 
@@ -10,7 +12,6 @@ from app.api.schemas.media import (
 )
 from app.api.schemas.media_query import MediaListQuerySchema
 from app.api.schemas.common import IncrementSchema
-
 from app.services.media_services import (
     add_media_title,
     list_media,
@@ -19,16 +20,14 @@ from app.services.media_services import (
 )
 from app.api.validators import (
     ranges,
-    pagination,
-    # sorting
+    pagination
 )
 from app.domain.exceptions import MediaAlreadyExistsError
 
-
-
+# Define /media router
 router = APIRouter(prefix="/media", tags=["Media"])
 
-
+# POST method
 @router.post("", status_code=status.HTTP_200_OK, response_model=List[MediaBatchResultSchema])
 def create_media(payload: List[MediaCreateSchema]):
     """
@@ -85,7 +84,7 @@ def create_media(payload: List[MediaCreateSchema]):
 
     return results
 
-
+# GET method
 @router.get("", status_code=status.HTTP_200_OK, response_model=PagedMediaResponseSchema)
 def get_media(query: MediaListQuerySchema = Depends()):
     """
@@ -112,7 +111,7 @@ def get_media(query: MediaListQuerySchema = Depends()):
         "offset": query.offset,
     }
 
-
+# PUT method
 @router.put("/{media_id}", status_code=status.HTTP_200_OK, response_model=MediaResponseSchema)
 def put_media(media_id: int, payload: MediaUpdateSchema):
     """
@@ -135,7 +134,7 @@ def put_media(media_id: int, payload: MediaUpdateSchema):
 
     return media
 
-
+# Patch method
 @router.patch("/{media_id}/{field}", status_code=status.HTTP_200_OK, response_model=MediaResponseSchema)
 def patch_media_counter(
     media_id: int,

@@ -1,3 +1,8 @@
+"""
+- Start FastAPI application.
+- Initialize database file if it doesn't exist.
+"""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -8,7 +13,15 @@ from app.core.init_db import init_db
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="StoreFlow API", version="0.1")
+    """
+    Declare FastAPI application:
+    - Add middleware for easy access - future build will require authentication.
+    - Initialize sqlite database if not present already.
+    - Include routers for API endpoints.
+    - Register error handlers.
+    - Start an app with root endpoint `/` showing complete status.
+    """
+    app = FastAPI(title="StoreFlow API", version="1.0")
 
     # Allow requests originating from any source
     app.add_middleware(
@@ -31,7 +44,10 @@ def create_app() -> FastAPI:
 
     return app
 
+
+# Start the application
 app = create_app()
+
 
 @app.get("/")
 def root():

@@ -1,3 +1,5 @@
+"""Schemas used specifically for tblMedia `GET /sales` method"""
+
 from typing import Optional
 from fastapi import Query, Depends
 

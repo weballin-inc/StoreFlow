@@ -1,3 +1,5 @@
+"""Schemas used for requests/responses for `/media` endpoint"""
+
 from pydantic import BaseModel, Field
 from typing import Optional, List, Literal
 from app.domain.enums import MediaType

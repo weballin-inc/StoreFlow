@@ -9,6 +9,10 @@ from backend.app.api.schemas.sales_query import SalesSortField
 
 
 def insert_sale(media_id: int, price: float) -> SaleResponseSchema:
+    """
+    INSERT into tblSales.
+    Returns the created row.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -54,10 +58,14 @@ def list_filtered(
     limit: int = 20,
     offset: int = 0,
 ) -> tuple[list[Sale], int]:
+    """
+    Filtered SELECT for tblSales.
+    """
 
     conn = get_connection()
     cursor = conn.cursor()
 
+    # Base query
     base_query = """
         FROM tblSales
         WHERE 1 = 1
@@ -65,7 +73,7 @@ def list_filtered(
 
     params: list = []
 
-    # ---------- exact filters ----------
+    # Exact filters
     if sale_id is not None:
         base_query += " AND SaleID = ?"
         params.append(sale_id)
@@ -82,7 +90,7 @@ def list_filtered(
         base_query += " AND ReleaseYear = ?"
         params.append(date)
 
-    # ---------- range filters ----------
+    # Range filters
 
     if price_from is not None:
         base_query += " AND Price >= ?"
@@ -100,21 +108,21 @@ def list_filtered(
         base_query += " AND ReleaseYear <= ?"
         params.append(date_to)
 
-    # ---------- total count ----------
+    # Total count
     count_query = "SELECT COUNT(*) " + base_query
     cursor.execute(count_query, params)
     total = cursor.fetchone()[0]
 
-    # ---------- sorting ----------
+    # Sorting
     if sort_by is not None:
         column = SalesSortField(sort_by).value
         base_query += f" ORDER BY {column} {order.upper()}"
 
-    # ---------- pagination ----------
+    # Pagination
     base_query += " LIMIT ? OFFSET ?"
     params.extend([limit, offset])
 
-    # ---------- final query ----------
+    # Final query
     final_query = """
         SELECT
             SaleID,
@@ -123,6 +131,7 @@ def list_filtered(
             Date
     """ + base_query
 
+    # Execution
     cursor.execute(final_query, params)
     rows = cursor.fetchall()
     conn.close()

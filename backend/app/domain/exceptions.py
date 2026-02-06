@@ -1,4 +1,4 @@
-"""Exception classes"""
+"""Exception classes, inheriting DomainError for clearer error descriptions."""
 
 class DomainError(Exception):
     """Base class for all domain-related errors."""

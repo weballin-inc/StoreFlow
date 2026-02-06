@@ -1,35 +1,60 @@
-"""Business logic for tblSales"""
+"""
+Business logic for tblSales
+- `add_sale` adds a sale record of the specified item to tblSales, along with the amount of such item being sold
+- `list_sales` lists filtered tblSales rows
+"""
 
-from app.domain.models import Sale
-from app.repositories import media_repo, sales_repo
+from app.api.schemas.sales_query import SalesListQuerySchema
 from app.domain.exceptions import (
     MediaNotFoundError,
     MediaAlreadySoldOut,
     InvalidValueError
 )
-from app.api.schemas.sales_query import SalesListQuerySchema
+from app.domain.models import Sale
+from app.repositories import media_repo, sales_repo
 
 
 # ------- Create/Add/Insert Sale -------
 def add_sale(media_id: int, amount_sold: int) -> Sale:
+    """
+    Add a record to tblSales.
+    - Add/Subtract from tblMedia based on the provided amount
+    - Insert a record to tblSales.
+    """
+
+    # Validate amount of items sold
     if amount_sold <= 0:
         raise InvalidValueError(f"Amount to sell must be >0. You've given {amount_sold}")
 
+    # Check if the media record that's being sold actually exists
     media = media_repo.get_by_id(media_id)
     if media is None:
         raise MediaNotFoundError(f"Media with ID {media_id} not found")
 
-    success = media_repo.decrement_media_amount(media_id, amount_sold)
+    # Check if the media record hasn't been sold yet
+    success = media_repo.arithmetics(media_id, amount_sold)
     if not success:
         raise MediaAlreadySoldOut(f"Not enough items in stock to sell {amount_sold}")
 
-    return sales_repo.insert_sale(media_id, media.price)
+    # INSERT sale to tblSales
+    for _ in range(amount_sold):
+        sale = sales_repo.insert_sale(
+            media_id=media_id,
+            price=media.price
+        )
+
+    return sale
 
 
 # ------- Read/Get/Select Sales -------
 def list_sales(query: SalesListQuerySchema) -> tuple[list[Sale], int]:
-    # reserved space for future business rules
+    """
+    Filtered list of all records in tblSales.
+    """
 
+    # Future business rules can go HERE
+
+    # Filtered SELECT on tblSales
     return sales_repo.list_filtered(
         sale_id=query.sale_id,
         media_id=query.media_id,
