@@ -1,4 +1,12 @@
-"""tblMedia CRUD"""
+"""
+tblMedia CRUD operation against SQL database
+- `get_by_title_and_type` searches records by Title+MediaType combo, used for validating the UNIQUE constraint
+- `get_by_id` searches records by MediaID, used for validating MediaAlreadyExistsError
+- `create` creates a tblMedia record
+- `list_filtered` filtered search on tblMedia
+- `update` updates multiple (selected) rows in tblMedia
+- `arithmetics` updates countable fields in tblMedia, either by incrementing or decrementing the value.
+"""
 
 from typing import Optional
 
@@ -6,141 +14,6 @@ from app.core.database import get_connection
 from app.domain.enums import MediaType
 from app.domain.models import Media
 from app.repositories.enums_repo import MediaSortField
-
-
-def list_filtered(
-    media_id: int | None = None,
-    title: str | None = None,
-    media_type: MediaType | None = None,
-    publisher: str | None = None,
-
-    quantity: int | None = None,
-    quantity_from: int | None = None,
-    quantity_to: int | None = None,
-
-    price: float | None = None,
-    price_from: float | None = None,
-    price_to: float | None = None,
-
-    release_year: int | None = None,
-    release_year_from: int | None = None,
-    release_year_to: int | None = None,
-
-    sort_by: str | None = None,
-    order: str = "asc",
-    limit: int = 20,
-    offset: int = 0,
-) -> tuple[list[Media], int]:
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    base_query = """
-        FROM tblMedia
-        WHERE 1 = 1
-    """
-
-    params: list = []
-
-    # ---------- exact filters ----------
-    if media_id is not None:
-        base_query += " AND MediaID = ?"
-        params.append(media_id)
-
-    if title is not None:
-        base_query += " AND Title LIKE ?"
-        params.append(f"%{title}%")
-
-    if media_type is not None:
-        base_query += " AND MediaType = ?"
-        params.append(media_type.value)
-
-    if publisher is not None:
-        base_query += " AND Publisher LIKE ?"
-        params.append(f"%{publisher}%")
-
-    if quantity is not None:
-        base_query += " AND Quantity = ?"
-        params.append(quantity)
-
-    if price is not None:
-        base_query += " AND Price = ?"
-        params.append(price)
-
-    if release_year is not None:
-        base_query += " AND ReleaseYear = ?"
-        params.append(release_year)
-
-    # ---------- range filters ----------
-    if quantity_from is not None:
-        base_query += " AND Quantity >= ?"
-        params.append(quantity_from)
-
-    if quantity_to is not None:
-        base_query += " AND Quantity <= ?"
-        params.append(quantity_to)
-
-    if price_from is not None:
-        base_query += " AND Price >= ?"
-        params.append(price_from)
-
-    if price_to is not None:
-        base_query += " AND Price <= ?"
-        params.append(price_to)
-
-    if release_year_from is not None:
-        base_query += " AND ReleaseYear >= ?"
-        params.append(release_year_from)
-
-    if release_year_to is not None:
-        base_query += " AND ReleaseYear <= ?"
-        params.append(release_year_to)
-
-    # ---------- total count ----------
-    count_query = "SELECT COUNT(*) " + base_query
-    cursor.execute(count_query, params)
-    total = cursor.fetchone()[0]
-
-    # ---------- sorting ----------
-    if sort_by is not None:
-        column = MediaSortField(sort_by).value
-        base_query += f" ORDER BY {column} {order.upper()}"
-
-    # ---------- pagination ----------
-    base_query += " LIMIT ? OFFSET ?"
-    params.extend([limit, offset])
-
-    # ---------- final query ----------
-    final_query = """
-        SELECT
-            MediaID,
-            Title,
-            MediaType,
-            ReleaseYear,
-            Publisher,
-            Quantity,
-            Price
-    """ + base_query
-
-    cursor.execute(final_query, params)
-    rows = cursor.fetchall()
-    conn.close()
-
-    return (
-        [
-            Media(
-                id=row[0],
-                title=row[1],
-                media_type=MediaType(row[2]),
-                release_year=row[3],
-                publisher=row[4],
-                quantity=row[5],
-                price=row[6],
-            )
-            for row in rows
-        ],
-        total,
-    )
 
 
 # Used to query if inserting a potential duplicate
@@ -247,7 +120,151 @@ def create(media: Media) -> Media:
     )
 
 
+def list_filtered(
+    media_id: int | None = None,
+    title: str | None = None,
+    media_type: MediaType | None = None,
+    publisher: str | None = None,
+
+    quantity: int | None = None,
+    quantity_from: int | None = None,
+    quantity_to: int | None = None,
+
+    price: float | None = None,
+    price_from: float | None = None,
+    price_to: float | None = None,
+
+    release_year: int | None = None,
+    release_year_from: int | None = None,
+    release_year_to: int | None = None,
+
+    sort_by: str | None = None,
+    order: str = "asc",
+    limit: int = 20,
+    offset: int = 0,
+) -> tuple[list[Media], int]:
+    """
+    Constructs the SELECT query with filters based on the parsed parameters.
+    Outputs items as tblMedia records and total amount of rows selected.
+    """
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Base query
+    base_query = """
+        FROM tblMedia
+        WHERE 1 = 1
+    """
+
+    params: list = []
+
+    # Exact filters
+    if media_id is not None:
+        base_query += " AND MediaID = ?"
+        params.append(media_id)
+
+    if title is not None:
+        base_query += " AND Title LIKE ?"
+        params.append(f"%{title}%")
+
+    if media_type is not None:
+        base_query += " AND MediaType = ?"
+        params.append(media_type.value)
+
+    if publisher is not None:
+        base_query += " AND Publisher LIKE ?"
+        params.append(f"%{publisher}%")
+
+    if quantity is not None:
+        base_query += " AND Quantity = ?"
+        params.append(quantity)
+
+    if price is not None:
+        base_query += " AND Price = ?"
+        params.append(price)
+
+    if release_year is not None:
+        base_query += " AND ReleaseYear = ?"
+        params.append(release_year)
+
+    # Range filters
+    if quantity_from is not None:
+        base_query += " AND Quantity >= ?"
+        params.append(quantity_from)
+
+    if quantity_to is not None:
+        base_query += " AND Quantity <= ?"
+        params.append(quantity_to)
+
+    if price_from is not None:
+        base_query += " AND Price >= ?"
+        params.append(price_from)
+
+    if price_to is not None:
+        base_query += " AND Price <= ?"
+        params.append(price_to)
+
+    if release_year_from is not None:
+        base_query += " AND ReleaseYear >= ?"
+        params.append(release_year_from)
+
+    if release_year_to is not None:
+        base_query += " AND ReleaseYear <= ?"
+        params.append(release_year_to)
+
+    # Total count
+    count_query = "SELECT COUNT(*) " + base_query
+    cursor.execute(count_query, params)
+    total = cursor.fetchone()[0]
+
+    # Sorting
+    if sort_by is not None:
+        column = MediaSortField(sort_by).value
+        base_query += f" ORDER BY {column} {order.upper()}"
+
+    # Pagination
+    base_query += " LIMIT ? OFFSET ?"
+    params.extend([limit, offset])
+
+    # Final query
+    final_query = """
+        SELECT
+            MediaID,
+            Title,
+            MediaType,
+            ReleaseYear,
+            Publisher,
+            Quantity,
+            Price
+    """ + base_query
+
+    # Execution
+    cursor.execute(final_query, params)
+    rows = cursor.fetchall()
+    conn.close()
+
+    return (
+        [
+            Media(
+                id=row[0],
+                title=row[1],
+                media_type=MediaType(row[2]),
+                release_year=row[3],
+                publisher=row[4],
+                quantity=row[5],
+                price=row[6],
+            )
+            for row in rows
+        ],
+        total,
+    )
+
+
 def update(media: Media) -> Media:
+    """
+    Updates multiple rows in tblMedia based on MediaID
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -280,7 +297,10 @@ def update(media: Media) -> Media:
     return media
 
 
-def decrement_media_amount(media_id: int, amount_sold: int) -> bool:
+def arithmetics(media_id: int, amount_sold: int) -> bool:
+    """
+    Single `Price`/`Quantity` value update by selected digit based on the delta.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 

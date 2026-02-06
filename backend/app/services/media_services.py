@@ -1,4 +1,11 @@
-"""Business logic for tblMedia"""
+"""
+Business logic for tblMedia operations.
+- `add_media_title` adds a new tblMedia record
+- `list_media` returns filtered tblMedia records
+- `update_media_by_id` updates a record based on MediaID
+- `patch_media_counter_by_id` edits the `Quantity` or `Price` fields based on delta
+"""
+
 from typing import Literal
 
 from app.api.schemas.media import MediaCreateSchema, MediaUpdateSchema
@@ -29,15 +36,18 @@ def add_media_title(data: MediaCreateSchema) -> Media:
     Title+MediaType must be unique
     """
 
+    # Check if the title+type already exists
     existing = media_repo.get_by_title_and_type(data.title, data.media_type)
     if existing is not None:
         raise MediaAlreadyExistsError(
             f"Media '{existing.title}' of type '{existing.media_type}' already exists. ID {existing.id}"
         )
 
+    # Validate price value
     if data.price is not None and data.price < 0:
         raise InvalidValueError(f"Price cannot be less than 0. You've given '{data.price}'")
 
+    # Construct tblMedia row to insert
     media = Media(
         id=None,
         title=data.title,
@@ -48,13 +58,20 @@ def add_media_title(data: MediaCreateSchema) -> Media:
         price=data.price
     )
 
+    # INSERT to tblMedia
     return media_repo.create(media)
 
 
 # ------- Read/Get/Select Media -------
 def list_media(query: MediaListQuerySchema) -> tuple[list[Media], int]:
-    # future business rules go HERE
+    """
+    Filtered query on tblMedia.
+    If no filters are provided, the select will output all rows from the table.
+    """
 
+    # Future business rules can go HERE
+
+    # Run filtered SELECT on tblMedia
     return media_repo.list_filtered(
         media_id=query.media_id,
         title=query.title,
@@ -79,18 +96,23 @@ def list_media(query: MediaListQuerySchema) -> tuple[list[Media], int]:
         offset=query.offset,
     )
 
+
 # ------- Update Media -------
 def update_media_by_id(
     media_id: int,
     data: MediaUpdateSchema,
 ) -> Media:
+    """
+    Update on multiple rows in tblMedia.
+    If no fields are provided, the update will run without changes.
+    """
 
-    # --- get existing ---
+    # Check if the record exists in tblMedia
     existing = media_repo.get_by_id(media_id)
     if existing is None:
         raise MediaNotFoundError(f"Media with ID {media_id} not found")
 
-    # --- Title + MediaType uniqueness ---
+    # Make sure the title+type unique constraint is not void
     new_title = (data.title if data.title is not None else existing.title)
     new_media_type = (data.media_type if data.media_type is not None else existing.media_type)
 
@@ -100,7 +122,7 @@ def update_media_by_id(
             f"Media '{new_title}' of type '{new_media_type.value}' already exists at ID {conflict.id}."
         )
 
-    # --- apply updates ---
+    # Construct the update statement
     updated = Media(
         id=media_id,
         title=new_title,
@@ -111,7 +133,9 @@ def update_media_by_id(
         price=(data.price if data.price is not None else existing.price),
     )
 
+    # UPDATE on tblMedia
     return media_repo.update(updated)
+
 
 # ------- Check if Media can be updated for Sale -------
 def patch_media_counter_by_id(
@@ -119,11 +143,18 @@ def patch_media_counter_by_id(
     field: Literal["quantity", "price"],
     delta: int,
 ) -> Media:
+    """
+    Single `Price`/`Quantity` value update by selected digit.
+    Positive int adds to the value.
+    Negative int subtracts.
+    """
 
+    # Check if the record exists in tblMedia, returns constructed tblMedia row
     media = media_repo.get_by_id(media_id)
     if media is None:
         raise MediaNotFoundError(f"Media with ID {media_id} not found")
 
+    # Validate quantity value
     if field == "quantity":
         new_value = media.quantity + delta
         if new_value < 0:
@@ -131,14 +162,17 @@ def patch_media_counter_by_id(
 
         media.quantity = new_value
 
+    # Validate price value
     elif field == "price":
         new_value = media.price + delta
         if new_value < 0:
             raise InvalidValueError("Price cannot be negative")
 
         media.price = new_value
-
+    
+    # Fallback for any unexpected input
     else:
         raise InvalidKeyError("Invalid field")
 
+    # UPDATE on tblMedia
     return media_repo.update(media)

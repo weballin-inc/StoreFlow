@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict
+from typing import List
 from datetime import datetime
 
 # ---------- Create ----------
@@ -14,6 +14,10 @@ class SaleResponseSchema(BaseModel):
     media_id: int
     price: float
     date: datetime
+
+class SaleBatchResponseSchema(BaseModel):
+    media_id: int
+    sold: int
 
 # ---------- Paged ----------
 
