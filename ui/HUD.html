@@ -16,6 +16,7 @@
         <div class="table_toolbar_L">
             <button id="items_button">Items</button>
             <button id="sales_button">Sales</button>
+            <button id="add_button">Add Item</button>
         </div>
         <div class="table_toolbar_R">
             <input id="searchInput" placeholder="Podaj nazwę">
@@ -175,6 +176,9 @@ function renderFilteredTable() {
                     <td>${item.price}</td>
                     <td>
                         <button onclick='openUpdatePanel(${JSON.stringify(item)})'>
+                            Sell
+                        </button>
+                        <button>
                             Update
                         </button>
                     </td>
@@ -282,7 +286,7 @@ async function loadTable(type) {
     if (type === "sales") {
         renderSalesHeader();
 
-        const res = await fetch("http://127.0.0.1:8000/sales?Order=asc&Limit=100&Offset=0");
+        const res = await fetch("http://127.0.0.1:8000/sales?Sort_by=SaleID&Order=desc&Limit=100&Offset=0");
         const data = await res.json();
 
         allSales = data.items.map(sale => ({
