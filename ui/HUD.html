@@ -28,6 +28,24 @@
     </table>
 </main>
 
+<div id="updatePanel">
+    <button id="closePanel">✖</button>
+
+    <h2 id="p_title"></h2>
+    <p><strong>Typ:</strong> <span id="p_type"></span></p>
+    <p><strong>Rok:</strong> <span id="p_year"></span></p>
+    <p><strong>Wydawca:</strong> <span id="p_publisher"></span></p>
+    <p><strong>Dostępne:</strong> <span id="p_quantity"></span></p>
+    <p><strong>Cena:</strong> <span id="p_price"></span></p>
+
+    <label>
+        Ilość:
+        <input id="sellAmount" type="number" min="1" value="1">
+    </label>
+
+    <button id="sendSale">Wyślij sprzedaż</button>
+</div>
+
 <footer>
     <button id="footer">Confirm</button>
 </footer>
@@ -42,6 +60,19 @@ const itemsBtn = document.getElementById("items_button");
 const salesBtn = document.getElementById("sales_button");
 const searchInput = document.getElementById("searchInput");
 
+/* ------------------ PANEL UPDATE ------------------ */
+const updatePanel = document.getElementById("updatePanel");
+const closePanelBtn = document.getElementById("closePanel");
+const sendSaleBtn = document.getElementById("sendSale");
+const sellAmountInput = document.getElementById("sellAmount");
+
+const pTitle = document.getElementById("p_title");
+const pType = document.getElementById("p_type");
+const pYear = document.getElementById("p_year");
+const pPublisher = document.getElementById("p_publisher");
+const pQuantity = document.getElementById("p_quantity");
+const pPrice = document.getElementById("p_price");
+
 /* ------------------ STAN ------------------ */
 let currentView = "items";
 let typeFilter = "ALL";
@@ -51,6 +82,8 @@ let mediaTitleMap = {};
 let allItems = [];
 let allSales = [];
 let searchQuery = "";
+
+let selectedItemId = null;
 
 /* ------------------ PLACEHOLDER ------------------ */
 function updateSearchPlaceholder() {
@@ -140,7 +173,11 @@ function renderFilteredTable() {
                     <td>${item.publisher}</td>
                     <td>${item.quantity}</td>
                     <td>${item.price}</td>
-                    <td><button>Update</button></td>
+                    <td>
+                        <button onclick='openUpdatePanel(${JSON.stringify(item)})'>
+                            Update
+                        </button>
+                    </td>
                 </tr>
             `);
         });
@@ -172,6 +209,48 @@ function renderFilteredTable() {
         });
     }
 }
+
+/* ------------------ PANEL UPDATE ------------------ */
+function openUpdatePanel(item) {
+    selectedItemId = item.id;
+
+    pTitle.textContent = item.title;
+    pType.textContent = item.media_type;
+    pYear.textContent = item.release_year;
+    pPublisher.textContent = item.publisher;
+    pQuantity.textContent = item.quantity;
+    pPrice.textContent = item.price;
+
+    sellAmountInput.value = 1;
+    sellAmountInput.max = item.quantity;
+
+    updatePanel.classList.add("open");
+}
+
+closePanelBtn.onclick = () => {
+    updatePanel.classList.remove("open");
+};
+
+/* ------------------ WYŚLIJ SPRZEDAŻ ------------------ */
+sendSaleBtn.onclick = async () => {
+    const amount = parseInt(sellAmountInput.value);
+
+    if (!selectedItemId || amount < 1) return;
+
+    await fetch(`http://127.0.0.1:8000/sales/${selectedItemId}`, {
+        method: "POST",
+        headers: {
+            "accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            amount_sold: amount
+        })
+    });
+
+    updatePanel.classList.remove("open");
+    loadTable("items");
+};
 
 /* ------------------ LOAD TABLE ------------------ */
 async function loadTable(type) {
