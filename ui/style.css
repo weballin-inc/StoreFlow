@@ -69,3 +69,44 @@ footer {
   box-sizing: border-box;
   background-color: #3B3B3B;
 }
+
+#closePanel {
+    width: 5%;
+}
+
+#updatePanel {
+    position: fixed;
+    top: 0;
+    right: -25%;
+    width: 25%;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.3);
+    padding: 20px;
+    box-sizing: border-box;
+    transition: right 0.3s ease;
+    z-index: 1000;
+}
+
+#updatePanel.open {
+    right: 0;
+}
+
+#updatePanel h2 {
+    margin-top: 0;
+}
+
+#updatePanel input {
+    width: 100%;
+    margin: 10px 0;
+}
+
+#sendSale {
+    width: 100%;
+}
+
+#closePanel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
