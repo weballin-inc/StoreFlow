@@ -5,6 +5,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes.media import router as media_router
 from app.api.routes.sales import router as sales_router
@@ -42,13 +43,11 @@ def create_app() -> FastAPI:
     # Error handlers
     register_error_handlers(app)
 
+    # Mount root path to html file
+    app.mount("/", StaticFiles(directory="../ui", html=True), name="ui")
+
     return app
 
 
 # Start the application
 app = create_app()
-
-
-@app.get("/")
-def root():
-    return {"status": "Everything works, Access /docs for API"}
