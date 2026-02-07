@@ -59,11 +59,26 @@
     <Folder Include="backend\app\repositories\" />
     <Folder Include="backend\app\services\" />
     <Folder Include="ui\" />
+    <Folder Include="ui\js\" />
+    <Folder Include="ui\js\api\" />
+    <Folder Include="ui\js\ui\" />
+    <Folder Include="ui\js\views\" />
+    <Folder Include="ui\style\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="backend\requirements.txt" />
-    <Content Include="ui\HUD.html" />
-    <Content Include="ui\style.css" />
+    <Content Include="ui\index.html" />
+    <Content Include="ui\js\api\mediaApi.js" />
+    <Content Include="ui\js\api\salesApi.js" />
+    <Content Include="ui\js\app.js" />
+    <Content Include="ui\js\state.js" />
+    <Content Include="ui\js\ui\panels.js" />
+    <Content Include="ui\js\ui\table.js" />
+    <Content Include="ui\js\ui\toast.js" />
+    <Content Include="ui\js\ui\toolbar.js" />
+    <Content Include="ui\js\views\itemsView.js" />
+    <Content Include="ui\js\views\salesView.js" />
+    <Content Include="ui\style\main.css" />
     <Content Include="ui\To Do.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
