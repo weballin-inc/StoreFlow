@@ -1,13 +1,16 @@
 export const state = {
+    // aktualny widok
     currentView: "items",
-    typeFilter: "ALL",
-    dateSortOrder: "desc",
-    searchQuery: "",
 
+    // dane
     allItems: [],
     allSales: [],
     mediaTitleMap: {},
 
+    // UI / interakcje
+    searchQuery: "",
+
+    // panele
     selectedItemId: null,
     panelMode: null // "SELL" | "UPDATE"
 };

@@ -1,17 +1,12 @@
 body {
     font-family: system-ui;
     background-color: #969696;
-    height: 100%;
-    width: 99%;
 }
 
 header {
     display: flex;
-    align-text: center;
     align-items: center;
-    justify-content: space-between;
     padding: 0 20px;
-    height: 15%;
 }
 
 .table_toolbar {
@@ -26,13 +21,7 @@ header {
     gap: 10px;
 }
 
-.table_toolbar_R {
-    display: flex;
-}
-
-
 main {
-    height: 65%;
     width: 100%;
 }
 
@@ -42,8 +31,8 @@ table {
     background: white;
 }
 
-td {
-    padding: 1px;
+td, th {
+    padding: 6px;
     border-bottom: 1px solid #ddd;
 }
 
@@ -51,34 +40,13 @@ tr:nth-child(even) {
     background-color: #f7f7f7;
 }
 
-th {
-    background: #f0f0f0;
-    text-align: left;
-    padding: 1px;
-    border-bottom: 1px solid #ddd;
-}
-
-/*footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  background-color: #3B3B3B;
-}*/
-
-#closePanel {
-    width: 5%;
-}
+/* PANEL */
 
 #updatePanel {
     position: fixed;
     top: 0;
-    right: -25%;
-    width: 25%;
+    right: -320px;
+    width: 320px;
     height: 100%;
     background: #ffffff;
     box-shadow: -4px 0 10px rgba(0,0,0,0.3);
@@ -92,24 +60,15 @@ th {
         right: 0;
     }
 
-    #updatePanel h2 {
-        margin-top: 0;
-    }
-
     #updatePanel input {
         width: 100%;
         margin: 10px 0;
     }
 
-#sendSale {
-    width: 100%;
-}
-
 #closePanel {
     position: absolute;
     top: 10px;
     right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 32px;
+    height: 32px;
 }
