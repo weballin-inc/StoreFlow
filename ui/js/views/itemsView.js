@@ -32,6 +32,7 @@ export async function loadItemsView() {
 
     } catch (err) {
         console.error("Błąd ładowania items:", err);
+        showError("Nie udało się pobrać listy items");
     }
 }
 

@@ -2,6 +2,7 @@
 import { sendSale } from "../api/salesApi.js";
 import { updateMedia } from "../api/mediaApi.js";
 import { loadItemsView } from "../views/itemsView.js";
+import { showError } from "./toast.js";
 
 /* ================== DOM ================== */
 
@@ -97,6 +98,7 @@ sendSaleBtn.addEventListener("click", async () => {
         await loadItemsView();
     } catch (err) {
         console.error("Błąd sprzedaży:", err);
+        showError("Nie udało się zapisać zmian");
     }
 });
 
@@ -118,6 +120,7 @@ saveUpdateBtn.addEventListener("click", async () => {
         await loadItemsView();
     } catch (err) {
         console.error("Błąd aktualizacji:", err);
+        showError("Nie udało się zapisać zmian");
     }
 });
 

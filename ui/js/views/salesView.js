@@ -28,5 +28,6 @@ export async function loadSalesView() {
 
     } catch (err) {
         console.error("Błąd ładowania sales:", err);
+        showError("Nie udało się pobrać sprzedaży");
     }
 }
