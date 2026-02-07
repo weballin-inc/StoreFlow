@@ -61,12 +61,13 @@
     <Folder Include="ui\" />
     <Folder Include="ui\js\" />
     <Folder Include="ui\js\api\" />
-    <Folder Include="ui\js\ui\" />
     <Folder Include="ui\js\views\" />
+    <Folder Include="ui\js\ui\" />
     <Folder Include="ui\style\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="backend\requirements.txt" />
+    <Content Include="ui\index.html.old" />
     <Content Include="ui\index.html" />
     <Content Include="ui\js\api\mediaApi.js" />
     <Content Include="ui\js\api\salesApi.js" />
@@ -74,10 +75,10 @@
     <Content Include="ui\js\state.js" />
     <Content Include="ui\js\ui\panels.js" />
     <Content Include="ui\js\ui\table.js" />
-    <Content Include="ui\js\ui\toast.js" />
     <Content Include="ui\js\ui\toolbar.js" />
     <Content Include="ui\js\views\itemsView.js" />
     <Content Include="ui\js\views\salesView.js" />
+    <Content Include="ui\style.css.old" />
     <Content Include="ui\style\main.css" />
     <Content Include="ui\To Do.txt" />
   </ItemGroup>

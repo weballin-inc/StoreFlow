@@ -1,0 +1,117 @@
+body {
+    font-family: system-ui;
+    background-color: #969696;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.table_toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.table_toolbar_L {
+    display: flex;
+    gap: 10px;
+}
+
+main {
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+td, th {
+    padding: 6px;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+/* PANEL */
+
+#updatePanel {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.3);
+    padding: 20px;
+    box-sizing: border-box;
+    transition: right 0.3s ease;
+    z-index: 1000;
+}
+
+    #updatePanel.open {
+        right: 0;
+    }
+
+    #updatePanel input {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+#closePanel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+}
+
+/* TOAST */
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    min-width: 240px;
+    max-width: 360px;
+    padding: 12px 16px;
+    background: #d32f2f; /* czerwony error */
+    color: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-size: 14px;
+    z-index: 2000;
+}
+
+    .toast.show {
+        animation: fadein 0.2s ease, fadeout 0.2s ease 2.8s;
+    }
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeout {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}

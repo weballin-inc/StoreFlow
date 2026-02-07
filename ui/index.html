@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style/main.css">
+    <script type="module" src="js/app.js"></script>
+    <title>StoreFlow</title>
+</head>
+<body>
+
+    <header>
+        <h1>StoreFlow</h1>
+    </header>
+
+    <main>
+        <div class="table_toolbar">
+            <div class="table_toolbar_L">
+                <button type="button" id="items_button">Items</button>
+                <button type="button" id="sales_button">Sales</button>
+                <button type="button" id="add_button">Add Item</button>
+            </div>
+            <div class="table_toolbar_R">
+                <input id="searchInput" type="search" placeholder="Search">
+            </div>
+        </div>
+
+        <table id="items">
+            <thead id="table_head"></thead>
+            <tbody></tbody>
+        </table>
+    </main>
+
+    <aside id="updatePanel">
+        <button type="button" id="closePanel">✖</button>
+
+        <h2 id="p_title"></h2>
+        <p><strong>Type:</strong> <span id="p_type"></span></p>
+        <p><strong>Year:</strong> <span id="p_year"></span></p>
+        <p><strong>Publisher:</strong> <span id="p_publisher"></span></p>
+        <p><strong>Available quantity:</strong> <span id="p_quantity"></span></p>
+        <p><strong>Price:</strong> <span id="p_price"></span></p>
+
+        <label>
+            Quantity to sell:
+            <input id="sellAmount" type="number" min="1" value="1">
+        </label>
+
+        <button type="button" id="sendSale">Send sale</button>
+
+        <div id="updateFields" hidden>
+            <label>
+                Title:
+                <input id="edit_title">
+            </label>
+            <label>
+                Type:
+                <select id="edit_type">
+                    <option value="BOOK">BOOK</option>
+                    <option value="GAME">GAME</option>
+                    <option value="MOVIE">MOVIE</option>
+                </select>
+            </label>
+            <label>
+                Year:
+                <input id="edit_year" type="number">
+            </label>
+            <label>
+                Publisher:
+                <input id="edit_publisher">
+            </label>
+            <label>
+                Quantity:
+                <input id="edit_quantity" type="number">
+            </label>
+            <label>
+                Price:
+                <input id="edit_price" type="number">
+            </label>
+            <button type="button" id="saveUpdate">Save update</button>
+        </div>
+    </aside>
+
+    <div id="toast" class="toast" hidden></div>
+</body>
+</html>
