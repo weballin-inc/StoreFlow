@@ -1,6 +1,6 @@
 ﻿import { state } from "../state.js";
 import { sendSale } from "../api/salesApi.js";
-import { updateMedia } from "../api/mediaApi.js";
+import { createMedia, updateMedia } from "../api/mediaApi.js";
 import { loadItemsView } from "../views/itemsView.js";
 import { showError } from "./toast.js";
 
@@ -40,6 +40,26 @@ function closePanel() {
     state.panelMode = null;
     state.selectedItemId = null;
 }
+
+/* ================== CREATE ================== */
+export function openCreatePanel() {
+    state.panelMode = "CREATE";
+    state.selectedItemId = null;
+
+    editTitle.value = "";
+    editType.value = "BOOK";
+    editYear.value = "";
+    editPublisher.value = "";
+    editQuantity.value = "";
+    editPrice.value = "";
+
+    updateFields.hidden = false;
+    sendSaleBtn.style.display = "none";
+    sellAmountInput.parentElement.style.display = "none";
+
+    openPanel();
+}
+
 
 /* ================== SELL ================== */
 
@@ -103,7 +123,7 @@ sendSaleBtn.addEventListener("click", async () => {
 });
 
 saveUpdateBtn.addEventListener("click", async () => {
-    if (state.panelMode !== "UPDATE") return;
+    if (!["UPDATE", "CREATE"].includes(state.panelMode)) return;
 
     const payload = {
         title: editTitle.value,
@@ -115,14 +135,22 @@ saveUpdateBtn.addEventListener("click", async () => {
     };
 
     try {
-        await updateMedia(state.selectedItemId, payload);
+        if (state.panelMode === "UPDATE") {
+            await updateMedia(state.selectedItemId, payload);
+        }
+
+        if (state.panelMode === "CREATE") {
+            await createMedia(payload);
+        }
+
         closePanel();
         await loadItemsView();
+
     } catch (err) {
-        console.error("Błąd aktualizacji:", err);
-        showError("Nie udało się zapisać zmian");
+        showError(err.message);
     }
 });
+
 
 /* ================== CLOSE ================== */
 

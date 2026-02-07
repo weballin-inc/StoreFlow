@@ -12,5 +12,5 @@ export const state = {
 
     // panele
     selectedItemId: null,
-    panelMode: null // "SELL" | "UPDATE"
+    panelMode: null // "SELL" | "UPDATE" | "CREATE"
 };

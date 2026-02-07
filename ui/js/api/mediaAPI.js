@@ -6,7 +6,7 @@
  */
 export async function fetchMedia() {
     const res = await fetch(
-        `${BASE_URL}/media?Order=asc&Limit=100&Offset=0`,
+        `${BASE_URL}/media?Sort_by=MediaID&Order=desc&Limit=20&Offset=0`,
         { method: "GET" }
     );
 
@@ -36,6 +36,26 @@ export async function updateMedia(id, payload) {
 
     if (!res.ok) {
         throw new Error(`updateMedia failed: ${res.status}`);
+    }
+
+    return res.json();
+}
+
+/**
+ * POST /media
+ * Tworzy nowy rekord dla Items
+ */
+export async function createMedia(payload) {
+    const res = await fetch(`${BASE_URL}/media`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify([payload])
+    });
+
+    if (!res.ok) {
+        await handleErrorResponse(res);
     }
 
     return res.json();

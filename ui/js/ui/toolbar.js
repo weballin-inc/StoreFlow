@@ -4,10 +4,12 @@
  * @param {Function} handlers.onItems
  * @param {Function} handlers.onSales
  * @param {Function} handlers.onSearch
+ * @param {Function} handlers.onAdd
  */
-export function initToolbar({ onItems, onSales, onSearch }) {
+export function initToolbar({ onItems, onSales, onAdd, onSearch }) {
     const itemsBtn = document.getElementById("items_button");
     const salesBtn = document.getElementById("sales_button");
+    const addBtn = document.getElementById("add_button");
     const searchInput = document.getElementById("searchInput");
 
     if (!itemsBtn || !salesBtn || !searchInput) {
@@ -20,6 +22,10 @@ export function initToolbar({ onItems, onSales, onSearch }) {
 
     salesBtn.addEventListener("click", () => {
         onSales();
+    });
+
+    addBtn.addEventListener("click", () => {
+        onAdd();
     });
 
     searchInput.addEventListener("input", e => {

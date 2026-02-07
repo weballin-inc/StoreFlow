@@ -3,7 +3,7 @@ import { loadItemsView } from "./views/itemsView.js";
 import { loadSalesView } from "./views/salesView.js";
 import { initToolbar } from "./ui/toolbar.js";
 import { renderTable } from "./ui/table.js";
-import { openSellPanel, openUpdatePanel } from "./ui/panels.js";
+import { openSellPanel, openUpdatePanel, openCreatePanel } from "./ui/panels.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
         onSales: async () => {
             await loadSalesView();
         },
+
+        onAdd: openCreatePanel,
 
         onSearch: query => {
             state.searchQuery = query;
