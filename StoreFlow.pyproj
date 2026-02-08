@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="backend\requirements.txt" />
+    <Content Include="requirements.txt" />
     <Content Include="ui\index.html" />
     <Content Include="ui\js\api\mediaApi.js" />
     <Content Include="ui\js\api\salesApi.js" />
