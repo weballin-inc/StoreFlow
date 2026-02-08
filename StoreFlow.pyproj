@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>dc0143af-ee74-4d16-997a-43697d4f17d5</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>P:\[PC Backup]\28.04.2025\Documents\Męszczyźni\Programowanie obiektowe\ui\HUD.html</StartupFile>
+    <StartupFile>run.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -12,6 +12,7 @@
     <Name>StoreFlow</Name>
     <RootNamespace>StoreFlow</RootNamespace>
     <IsWindowsApplication>False</IsWindowsApplication>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,7 +46,8 @@
     <Compile Include="backend\app\repositories\__init__.py" />
     <Compile Include="backend\app\services\media_services.py" />
     <Compile Include="backend\app\services\sales_services.py" />
-    <Compile Include="StoreFlow_app.py" />
+    <Compile Include="backend\app\__init__.py" />
+    <Compile Include="run.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="backend\" />
@@ -78,6 +80,17 @@
     <Content Include="ui\js\views\itemsView.js" />
     <Content Include="ui\js\views\salesView.js" />
     <Content Include="ui\style\main.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.13</Version>
+      <Description>env (Python 3.13 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
